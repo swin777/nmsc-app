@@ -1,0 +1,15 @@
+.ck-editor__editable {
+    min-height: 400px !important;
+}
+
+.ck h2{
+    font-size: 32px;
+}
+
+.ck h3{
+    font-size: 24px;
+}
+
+.ck h4{
+    font-size: 18px;
+}

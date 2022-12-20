@@ -1,0 +1,320 @@
+/*
+Common UI
+------------------------------------------------------------------ */
+
+/* button set */
+.btn{
+	display:inline-block;
+	min-width:123px;
+	height:40px;
+	line-height:40px;
+	padding:0 20px;
+	text-align: center;
+	font-size:16px;
+	border-radius:7px;
+	font-weight:normal;
+	vertical-align:middle;
+	white-space:nowrap;
+	border:0;
+	cursor:pointer;
+	-webkit-user-select:none;
+	-moz-user-select:none;
+	-ms-user-select:none;
+
+	&.btn-primary{
+		background-color:$primary-color;
+		color:#fff;
+	}
+	&.btn-line{
+		background-color:#fff;
+		border:1px solid $primary-color;
+		color:$primary-color;
+	}
+	&.btn-darkgray{
+		background-color:#5c5c5c;
+		color:#fff;
+	}
+	&.btn-gray{
+		background-color:#9a9a9a;
+		color:#fff;
+	}
+	&.btn-sm{
+		background-color:#9a9a9a;
+		color:#fff;
+		height: 28px;
+		font-size: 13px;
+		line-height: 28px;
+		min-width: 50px;
+		border-radius: 5px;
+	}
+	&.disabled{
+		opacity:0.4;
+//		background-color:#4e92e7;
+//		cursor:not-allowed;
+	}
+}
+.btn:focus,
+.btn:active:focus,
+.btn.active:focus,
+.btn.focus,
+.btn:active.focus,
+.btn.active.focus {
+	outline: thin dotted;
+	outline: 5px auto -webkit-focus-ring-color;
+	outline-offset: -2px
+}
+.btn:hover,
+.btn:focus,
+.btn.focus {
+//	color: #333;
+	text-decoration: none
+}
+.btn:active,
+.btn.active {
+	background-image: none;
+	outline: 0;
+	box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125)
+}
+.btn.disabled,
+.btn[disabled],
+fieldset[disabled] .btn {
+	cursor: not-allowed;
+	box-shadow: none;
+	opacity: .65
+}
+.btn-default,
+a.btn-default {
+	border-color: #2b2b2b;
+	background-color: #fff;
+	color: #2b2b2b
+}
+.btn-mkt,
+a.btn-mkt {
+	border-color: #002d6c;
+	background-color: #fff;
+	color: #002d6c
+}
+.btn-default:hover,
+.btn-default:focus,
+.btn-default.focus,
+.btn-default:active,
+.btn-default.active {
+	border-color: #2b2b2b;
+	background-color: #f4f4f4;
+	color: #2b2b2b
+}
+.btn-medium {
+	width: auto;
+	height: 30px;
+	padding: 0 12px;
+	font-size: 14px;
+	line-height: 27px
+}
+.btn-small {
+	width: auto;
+	height: 28px;
+	font-size: 12px;
+	line-height: 28px
+}
+.btn>i {
+	margin-left: 10px;
+	margin-right: 0;
+	margin-top: -1px;
+	line-height: 44px
+}
+.btn>i.i-left {
+	margin-right: 10px;
+	margin-left: 0
+}
+.btn-medium>i {
+	line-height: 36px
+}
+.btn-small>i {
+	line-height: 28px
+}
+.btn.w100 {
+	width: 100%
+}
+
+/* textarea, input */
+textarea,
+input[type=text],
+input[type=password],
+input[type=datetime],
+input[type=datetime-local],
+input[type=date],
+input[type=month],
+input[type=time],
+input[type=week],
+input[type=number],
+input[type=email],
+input[type=url],
+input[type=search],
+input[type=tel],
+input[type=color] {
+	border-radius: 0 !important;
+	border: 1px solid #8d8d8d;
+	background-clip: padding-box !important;
+	background-color: #fff;
+	-webkit-border-radius: 0 !important;
+	-webkit-background-clip: padding-box !important;
+	-moz-border-radius: 0 !important;
+	-moz-background-clip: padding !important;
+//	-webkit-transition: -webkit-box-shadow .45s, border-color .45s ease-in-out;
+//	-webkit-transition: box-shadow .45s, border-color .45s ease-in-out;
+//	transition: box-shadow .45s, border-color .45s ease-in-out;
+	box-shadow: none
+}
+
+textarea:hover,
+input[type=text]:hover,
+input[type=password]:hover,
+input[type=datetime]:hover,
+input[type=datetime-local]:hover,
+input[type=date]:hover,
+input[type=month]:hover,
+input[type=time]:hover,
+input[type=week]:hover,
+input[type=number]:hover,
+input[type=email]:hover,
+input[type=url]:hover,
+input[type=search]:hover,
+input[type=tel]:hover,
+input[type=color]:hover {
+//	border-color: rgba(100, 100, 100, .1)
+}
+
+textarea:focus,
+input[type=text]:focus,
+input[type=password]:focus,
+input[type=datetime]:focus,
+input[type=datetime-local]:focus,
+input[type=date]:focus,
+input[type=month]:focus,
+input[type=time]:focus,
+input[type=week]:focus,
+input[type=number]:focus,
+input[type=email]:focus,
+input[type=url]:focus,
+input[type=search]:focus,
+input[type=tel]:focus,
+input[type=color]:focus {
+//	border-color: rgba(100, 100, 100, .1);
+	box-shadow: inset 0 2px 4px rgba(100, 100, 100, .1);
+	outline: 0
+}
+
+input.input,
+textarea.input {
+	width: 100%;
+	height: 36px;
+	padding: 0 7px;
+	font-size: 15px;
+	color: #000
+}
+
+textarea.input {
+	height: 75px;
+	padding-top: 10px;
+	padding-bottom: 10px
+}
+
+textarea:disabled,
+input[type=text]:disabled,
+input[type=password]:disabled,
+input[type=datetime]:disabled,
+input[type=datetime-local]:disabled,
+input[type=date]:disabled,
+input[type=month]:disabled,
+input[type=time]:disabled,
+input[type=week]:disabled,
+input[type=number]:disabled,
+input[type=email]:disabled,
+input[type=url]:disabled,
+input[type=search]:disabled,
+input[type=tel]:disabled,
+input[type=color]:disabled,
+textarea:disabled:hover,
+input[type=text]:disabled:hover,
+input[type=password]:disabled:hover,
+input[type=datetime]:disabled:hover,
+input[type=datetime-local]:disabled:hover,
+input[type=date]:disabled:hover,
+input[type=month]:disabled:hover,
+input[type=time]:disabled:hover,
+input[type=week]:disabled:hover,
+input[type=number]:disabled:hover,
+input[type=email]:disabled:hover,
+input[type=url]:disabled:hover,
+input[type=search]:disabled:hover,
+input[type=tel]:disabled:hover,
+input[type=color]:disabled:hover {
+	border: 1px solid #eee;
+	background-color: #f7f7f7
+}
+.input.w100{width:100% !important}
+.input.inline{width:auto !important}
+//
+//input, select, textarea, button {-webkit-appearance: none;-moz-appearance: none;appearance: none;}
+
+/* Checkbox & Radio */
+.checks{display:inline-block;position:relative;margin-right:10px}
+.checks input[type=checkbox] + label:before,.checks input[type=radio] + label:before,.checks input[type=checkbox]:checked + label:before,.checks input[type=radio]:checked + label:before{background:url(../images/common/ico_checks.png) no-repeat;background-size:52px auto}
+.checks input[type=checkbox],.checks input[type=radio]{position:absolute;width:20px;height:20px;margin:0 0 0 1px;padding:0}
+.checks input[type=checkbox] + label,.checks input[type=radio] + label,.radio-list input[type=radio] + label{display:inline-block;position:relative;padding-left:29px;font-size:15px;line-height:22px !important;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none}
+.checks input[type=checkbox] + label:before{display:inline-block;width:22px;height:22px;margin:-1px 7px 0 -28px;background-position:0 0;line-height:22px;text-align:center;vertical-align:middle;content:''}
+.checks input[type=checkbox]:checked + label:before{background-position:0 -26px}
+.checks input[type=checkbox].disabled + label:before,.checks input[type=checkbox]:disabled + label:before{background-position:0 -52px}
+.checks input[type=checkbox]:checked.disabled + label:before,.checks input[type=checkbox]:checked:disabled + label:before{background-position:0 -75px}
+.checks input[type=radio] + label{padding-left:26px}
+.checks input[type=radio] + label:before{position:absolute;left:0;width:22px;height:22px;background-position:-25px 0;text-align:center;content:''}
+.checks input[type=radio]:checked + label{color:#002c5e}
+.checks input[type=radio]:checked + label:before{background-position:-25px -26px}
+.checks input[type=radio].disabled + label:before,.checks input[type=radio]:disabled + label:before{background-position:-25px -52px}
+.checks input[type=radio].disabled + label,.checks input[type=radio]:disabled + label{color:#999}
+.checks input[type=radio]:checked.disabled + label:before,.checks input[type=radio]:checked:disabled + label:before{background-position:-25px -78px}
+
+/* Slick Slider */
+.slick-loading .slick-list{background:#fff url(../images/common/ajax_loader.gif) center center no-repeat}
+
+/* Slider */
+.slick-slider{display:block;position:relative;box-sizing:border-box;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;-webkit-touch-callout:none;-khtml-user-select:none;-ms-touch-action:pan-y;touch-action:pan-y;-webkit-tap-highlight-color:transparent}
+.slick-list{display:block;overflow:hidden;position:relative;margin:0;padding:0}
+.slick-list:focus{outline:none}
+.slick-list.dragging{cursor:pointer;cursor:hand}
+.slick-slider .slick-track,.slick-slider .slick-list{-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}
+.slick-track{display:block;position:relative;top:0;left:0}
+.slick-track:before,.slick-track:after{display:table;content:''}
+.slick-track:after{clear:both}
+.slick-loading .slick-track{visibility:hidden}
+.slick-slide{display:none;float:left;height:100%;min-height:1px}
+[dir=rtl] .slick-slide{float:right}
+.slick-slide img{display:block}
+.slick-slide.slick-loading img{display:none}
+.slick-slide.dragging img{pointer-events:none}
+.slick-initialized .slick-slide{display:block}
+.slick-loading .slick-slide{visibility:hidden}
+.slick-vertical .slick-slide{display:block;height:auto;border:1px solid transparent}
+.slick-arrow.slick-hidden{display:none}
+
+/* Slick slider Arrows */
+.slick-prev,.slick-next{display:block;position:absolute;top:50%;width:20px;height:20px;padding:0;border:none;background:transparent;font-size:0;line-height:0;color:transparent;-webkit-transform:translate(0,-50%);transform:translate(0,-50%);cursor:pointer;outline:none}
+.slick-prev:hover,.slick-prev:focus,.slick-next:hover,.slick-next:focus{background:transparent;color:transparent;outline:none}
+.slick-prev:hover:before,.slick-prev:focus:before,.slick-next:hover:before,.slick-next:focus:before{opacity:1}
+.slick-prev.slick-disabled:before,.slick-next.slick-disabled:before{opacity:.1}
+
+.slick-prev:before,.slick-next:before{font-family:'slick';font-size:20px;line-height:1;color:#FFF;opacity:.75;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+.slick-prev{left:-25px}
+[dir=rtl] .slick-prev{right:-25px;left:auto}
+.slick-next{right:-25px}
+[dir=rtl] .slick-next{right:auto;left:-25px}
+
+/* Slick slider Dots */
+.slick-dotted.slick-slider{margin-bottom:30px}
+.slick-dots{display:block;position:absolute;bottom:-25px;width:100%;margin:0;padding:0;text-align:center;list-style:none}
+.slick-dots li{display:inline-block;position:relative;width:20px;height:20px;margin:0 5px;padding:0;cursor:pointer}
+.slick-dots li button{display:block;width:20px;height:20px;padding:5px;border:0;background:transparent;font-size:0;line-height:0;color:transparent;cursor:pointer;outline:none}
+.slick-dots li button:hover,.slick-dots li button:focus{outline:none}
+.slick-dots li button:hover:before,.slick-dots li button:focus:before{opacity:1}
+.slick-dots li button:before{position:absolute;top:0;left:0;width:20px;height:20px;font-size:6px;line-height:20px;color:#000;text-align:center;content:'';opacity:.25;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+.slick-dots li.slick-active button:before{color:#000;opacity:.75}
