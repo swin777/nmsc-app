@@ -1,28 +1,45 @@
-import { useState } from "react";
-import { useSetRecoilState } from "recoil"
-import { mode, MODE } from '../state'
+import { useMemo, useState, useEffect } from "react";
+import { useRecoilValueLoadable, useSetRecoilState } from "recoil"
+import { categoryRefresh, listCategories, mode, MODE, selectCatory, topicRefresh } from '../state'
 import Pagination from "react-js-pagination";
+import { Category, CategoryListData } from "../../../models/category";
+import { serverCall } from "../../../utils/apiCallUtil";
 
-const CategoryCard = () => {
+type CategoryProps = {
+    category: Category|null,
+}
+
+let checkCategories:Array<number> = [];
+
+const CategoryCard = ({category}:CategoryProps) => {
     const setMode = useSetRecoilState(mode);
+    const setSelectCatory = useSetRecoilState(selectCatory);
+    const setTopicRefresh = useSetRecoilState(topicRefresh);
+    const [check, setCheck] = useState(false);
 
     const goTopic = () => {
+        setTopicRefresh(new Date().getTime())
+        setSelectCatory(category);
         setMode(MODE.TOPIC_LIST)
     }
+    
+    useEffect(()=>{
+        if(check){
+            checkCategories = [...checkCategories, category!.categoryId]
+        }else{
+            checkCategories = [...checkCategories.filter(e=>e!==category!.categoryId)];
+        }
+    }, [check])
 
     return(
         <li>
             <div className="checks center">
-                <input type="checkbox" name="" id="category01"/>
+                <input type="checkbox" id={category?.categoryId+''} checked={check} onChange={e=>{setCheck(!check);}}/>
                 <div className="text">
-                    <strong className="title" style={{cursor:'pointer'}} onClick={goTopic}>천리안위성 1호</strong>
-                    <p>천리안위성 1호 관련 협업 공간입니다.</p>
+                    <strong className="title" style={{cursor:'pointer'}} onClick={goTopic}>{category?.title}</strong>
+                    <div className="ck" dangerouslySetInnerHTML={{ __html: category!.contents }} ></div>
                     <div className="tag_group">
-                        <span className="tag">해시태그1</span>
-                        <span className="tag">해시태그1</span>
-                        <span className="tag">해시태그1</span>
-                        <span className="tag">해시태그1</span>
-                        <span className="tag">해시태그1</span>
+                        {category?.tags}
                     </div>
                 </div>
             </div>
@@ -31,23 +48,46 @@ const CategoryCard = () => {
 }
 
 const CategoryList = () => {
-    const [cacheBust, setCacheBust] = useState(new Date().getTime());
-    //pagination
+    const setMode = useSetRecoilState(mode);
+
     const limit = 5; //한 페이지에 있는 리스트 개수
     const [page, setPage] = useState<number>(1); //현재 페이지
+    const setCategoryRefresh = useSetRecoilState(categoryRefresh);
+
+    const categoryListDataAtom = useRecoilValueLoadable<CategoryListData|null>(listCategories({page:page}))
+    const [categoryListData, setCategoryListData] = useState<CategoryListData|null>(null)
 
     const handlePageChange = (page:number) => {
         setPage(page);
     };
 
-    const setMode = useSetRecoilState(mode);
+    const deleteCategory = async() => {
+        let res:any = await serverCall(`/homepage/html/base/collaboration/deleteCategory.do`, 'DELETE', {'categoryIds':checkCategories})
+        if(res.data){
+            alert('삭제되었습니다.');
+            setPage(1);
+            setCategoryRefresh(new Date().getTime())
+        }else{
+            alert(res.error);
+        }
+    }
+
+    useMemo(()=>{
+        if(categoryListDataAtom?.state){
+            //loading
+        }
+        if(categoryListDataAtom?.state === 'hasValue' && categoryListDataAtom?.contents){
+            setCategoryListData(categoryListDataAtom?.contents);
+        }
+    },[categoryListDataAtom])
+
     return(
         <div className="content-wrap">
             <article id="content">
-                <section className="board-list-section">
+                <section className="board-list-section" style={{margin:0}}>
                     <h4 className="sub-title">카테고리</h4>
                     <div className="board-util">
-                        <p className="all-tx">전체 1,388건</p>
+                        <p className="all-tx">전체 {categoryListData?.total.toLocaleString()}건</p>
                         <form name="searchForm" id="searchForm" method="post">
                         <input type="hidden" name="pageIndex" id="pageIndex" value="1"/>
                         <div className="search-box">
@@ -63,23 +103,23 @@ const CategoryList = () => {
                         </form>
                     </div>
 
-                    <ul id="search-data" className="gallery-list collabo">
-                        {[1,2,3].map(()=>
-                        <CategoryCard/> 
+                    <ul id="search-data" className="gallery-list collabo" style={{height:600, overflowY:'auto'}}>
+                        {categoryListData && categoryListData.categories && categoryListData.categories.map((category)=>
+                        <CategoryCard key={category.categoryId} category={category}/> 
                         )}
                     </ul>
                     <div id="paging-area">
                         <Pagination 
                             activePage={page} // 현재 페이지
-                            itemsCountPerPage={limit} // 한 페이지에 보여줄 데이터 갯수
-                            totalItemsCount={30} // 총 데이터 갯수
+                            itemsCountPerPage={categoryListData ? categoryListData.rows : 0} // 한 페이지에 보여줄 데이터 갯수
+                            totalItemsCount={categoryListData ? categoryListData.total : 0} // 총 데이터 갯수
                             pageRangeDisplayed={10} // paginator의 페이지 범위(한번에 보여줄 페이지 범위)
                             onChange={handlePageChange} // 페이지 변경을 핸들링하는 함수
                         />
                     </div>
                     <div className="btn-area right">
                         <button className="btn btn-primary" onClick={e=>setMode(MODE.CATEGORY_REG)}>카테고리 생성</button>&nbsp;
-                        <button className="btn btn-line red">삭제</button>
+                        <button className="btn btn-line red" onClick={deleteCategory}>삭제</button>
                     </div>
                 </section>
                 

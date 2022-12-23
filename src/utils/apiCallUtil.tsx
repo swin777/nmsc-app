@@ -1,7 +1,7 @@
 
 import axios, {AxiosRequestConfig} from "axios";
 
-const url = "/server";
+const url = "";
 
 export const serverCall = (path: string, method: string, data: any) => {
     return new Promise((resolve, reject) => {

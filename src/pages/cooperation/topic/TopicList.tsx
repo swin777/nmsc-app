@@ -1,36 +1,56 @@
-import { useSetRecoilState } from "recoil";
-import { MODE, mode } from "../state";
+import { useEffect, useMemo, useState } from "react";
+import { useRecoilValue, useRecoilValueLoadable, useSetRecoilState } from "recoil";
+import { Topic, TopicListData } from "../../../models/topic";
+import { serverCall } from "../../../utils/apiCallUtil";
+import { listTopics, MODE, mode, selectCatory, selectTopic, topicDetailRefresh, topicRefresh } from "../state";
 
-const TopicCard = () => {
-    const setMode = useSetRecoilState(mode);
+type TopicProps = {
+    topic: Topic|null,
+}
+
+let checkTopics:Array<number> = [];
+
+const TopicCard = ({topic}:TopicProps) => {
+    const setMode = useSetRecoilState(mode); 
+    const setTopicDetailRefresh = useSetRecoilState(topicDetailRefresh);
+    const setSelectTopic = useSetRecoilState(selectTopic);
+    const [check, setCheck] = useState(false);
 
     const goTopicDetail = () => {
+        setTopicDetailRefresh(new Date().getTime())
+        setSelectTopic(topic)
         setMode(MODE.TOPIC_DETAIL)
     }
+
+    useEffect(()=>{
+        if(check){
+            checkTopics = [...checkTopics, topic!.topicId]
+        }else{
+            checkTopics = [...checkTopics.filter(e=>e!==topic!.topicId)];
+        }
+    }, [check])
 
     return (
         <section className="board-view-section">
             <div className="board-header">
                 <div className="checks center">
-                    <input type="checkbox" name="" id="category01"/>
+                    <input type="checkbox" id={topic?.topicId+''} checked={check} onChange={e=>{setCheck(!check);}}/>
                     <div className="text">
                         <strong className="title full ml20" style={{cursor:'pointer'}} onClick={goTopicDetail}>
-                            이박사 / 위험기상요소 처리 알고리즘
+                            {topic?.title}
                         </strong>
                     </div>
                 </div>
             </div> 
             <div className="board-content">
-                <div className="cke_contents">
-                    위험기상요소 처리 알고리즘 연구
-                </div>
+                <div className="cke_contents" dangerouslySetInnerHTML={{ __html: topic!.contents }} ></div>
             </div>
             <div className="board-footer">
                 <div className="group">
-                    <span className="date">등록일 : 2022.12.07</span> 
+                    <span className="date">등록일 : {topic!.regDate}</span> 
                 </div>
                 <div className="group">
-                    <span className="lang">작성 언어 : Python</span> 
+                    <span className="lang">작성 언어 : {topic!.language!=='undefined' ? topic!.language : '-'}</span> 
                 </div>
             </div>
         </section>
@@ -39,15 +59,45 @@ const TopicCard = () => {
 
 const TopicList = () => {
     const setMode = useSetRecoilState(mode);
+    const category = useRecoilValue(selectCatory)
+    const topicListDataAtom = useRecoilValueLoadable<TopicListData|null>(listTopics({}))
+    const [topicListData, setTopicListData] = useState<TopicListData|null>(null)
+    const setSelectTopic = useSetRecoilState(selectTopic) 
+    const setTopicRefresh = useSetRecoilState(topicRefresh);
+
+    const goTopicReg = () => {
+        setSelectTopic(null)
+        setMode(MODE.TOPIC_REG)
+    }
+
+    const deleteTopic = async() => {
+        let res:any = await serverCall(`/homepage/html/base/collaboration/deleteTopic.do`, 'DELETE', {'topicIds':checkTopics, 'categoryId':category?.categoryId})
+        if(res.data){
+            alert('삭제되었습니다.');
+            setTopicRefresh(new Date().getTime())
+        }else{
+            alert(res.error);
+        }
+    }
+
+    useMemo(()=>{
+        if(topicListDataAtom?.state){
+            //loading
+        }
+        if(topicListDataAtom?.state === 'hasValue' && topicListDataAtom?.contents){
+            setTopicListData(topicListDataAtom?.contents);
+        }
+    },[topicListDataAtom])
+
     return(
         <div className="content-wrap">
             <article id="content">
                 <div style={{display:'flex', justifyContent:'space-between'}}>
-                    <h4 className="sub-title"># 천리안 위성 2호</h4>
+                    <h4 className="sub-title">{category?.title}</h4>
                     <button className="btn btn-primary" onClick={()=>setMode(MODE.CATEGORY_LIST)}>카테고리 가기</button>
                 </div>
                 <div className="board-util mb-20">
-                    <p className="all-tx">전체 1,388건</p>
+                    <p className="all-tx">전체 {topicListData?.count}건</p>
                     <form name="searchForm" id="searchForm" method="post">
                     <input type="hidden" name="pageIndex" id="pageIndex" value="1"/>
                     <div className="search-box">
@@ -62,14 +112,14 @@ const TopicList = () => {
                     </div>
                     </form>
                 </div>
-                <div>
-                    {[1,2].map(()=>
-                        <TopicCard/> 
+                <div style={{height:700, overflowY:'auto'}}>
+                    {topicListData && topicListData.topics && topicListData.topics.map((topic)=>
+                    <TopicCard key={topic.topicId} topic={topic}/> 
                     )}
                 </div>
                 <div className="btn-area right">
-                    <button className="btn btn-primary" onClick={()=>setMode(MODE.TOPIC_REG)}>토픽 생성</button>&nbsp;
-                    <button className="btn btn-line red">토픽 삭제</button>
+                    <button className="btn btn-primary" onClick={goTopicReg}>토픽 생성</button>&nbsp;
+                    <button className="btn btn-line red" onClick={deleteTopic}>토픽 삭제</button>
                 </div>
             </article>
         </div>

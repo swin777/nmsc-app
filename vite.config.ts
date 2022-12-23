@@ -6,9 +6,9 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-        "/server": {
-            target: "https://localhost:8080",
-            rewrite: path => path.replace(/^\/server/, ""),
+        "/homepage": {
+            target: "http://localhost:8080",
+            rewrite: path => path.replace(/^\/homepage/, "homepage"),
             secure: false,
             changeOrigin: true
         },
