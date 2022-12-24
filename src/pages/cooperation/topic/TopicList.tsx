@@ -90,8 +90,8 @@ const TopicList = () => {
     },[topicListDataAtom])
 
     return(
-        <div className="content-wrap">
-            <article id="content">
+        <>
+            <section className="board-list-section">
                 <div style={{display:'flex', justifyContent:'space-between'}}>
                     <h4 className="sub-title">{category?.title}</h4>
                     <button className="btn btn-primary" onClick={()=>setMode(MODE.CATEGORY_LIST)}>카테고리 가기</button>
@@ -107,7 +107,7 @@ const TopicList = () => {
                         </div>
                         <div className="search-text">
                             <input type="text" className="input" title="검색어 입력" id="searchWord" name="searchWord" value=""/>
-                            <button className="btn-search searchBtn"><span className="hide">검색</span></button>
+                            {/* <button className="btn-search searchBtn"><span className="hide">검색</span></button> */}
                         </div>
                     </div>
                     </form>
@@ -121,8 +121,12 @@ const TopicList = () => {
                     <button className="btn btn-primary" onClick={goTopicReg}>토픽 생성</button>&nbsp;
                     <button className="btn btn-line red" onClick={deleteTopic}>토픽 삭제</button>
                 </div>
-            </article>
-        </div>
+            </section>
+
+            <div className="btn-top">
+                <button type="button"><span>TOP</span></button>
+            </div>
+        </>
     )
 }
 

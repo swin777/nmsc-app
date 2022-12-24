@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from "react";
-import { useRecoilValueLoadable, useSetRecoilState } from "recoil"
-import { categoryRefresh, listCategories, mode, MODE, selectCatory, topicRefresh } from '../state'
+import { useRecoilState, useRecoilValueLoadable, useSetRecoilState } from "recoil"
+import { categoryRefresh, listCategories, mode, MODE, selectCatory, topicRefresh, categorySearchKeyWord, categorySearchType } from '../state'
 import Pagination from "react-js-pagination";
 import { Category, CategoryListData } from "../../../models/category";
 import { serverCall } from "../../../utils/apiCallUtil";
@@ -57,6 +57,9 @@ const CategoryList = () => {
     const categoryListDataAtom = useRecoilValueLoadable<CategoryListData|null>(listCategories({page:page}))
     const [categoryListData, setCategoryListData] = useState<CategoryListData|null>(null)
 
+    const [searchType, setSearchType] = useRecoilState(categorySearchType)
+    const [searchKeyWord, setSearchKeyWord] = useRecoilState(categorySearchKeyWord)
+
     const handlePageChange = (page:number) => {
         setPage(page);
     };
@@ -72,6 +75,10 @@ const CategoryList = () => {
         }
     }
 
+    const onChangeHandler = ({target}:any) => {
+        setSearchType(target.value+'')
+    }
+
     useMemo(()=>{
         if(categoryListDataAtom?.state){
             //loading
@@ -82,52 +89,56 @@ const CategoryList = () => {
     },[categoryListDataAtom])
 
     return(
-        <div className="content-wrap">
-            <article id="content">
-                <section className="board-list-section" style={{margin:0}}>
-                    <h4 className="sub-title">카테고리</h4>
-                    <div className="board-util">
-                        <p className="all-tx">전체 {categoryListData?.total.toLocaleString()}건</p>
-                        <form name="searchForm" id="searchForm" method="post">
-                        <input type="hidden" name="pageIndex" id="pageIndex" value="1"/>
-                        <div className="search-box">
-                            <div className="select-style">
-                                <label htmlFor="searchType">검색조건</label>
-                                <select id="searchType" name="searchType"><option value="">검색조건</option><option value="TITLE">제목</option><option value="CONTENTS">내용</option></select>
-                            </div>
-                            <div className="search-text">
-                                <input type="text" className="input" title="검색어 입력" id="searchWord" name="searchWord" value=""/>
-                                <button className="btn-search searchBtn"><span className="hide">검색</span></button>
-                            </div>
+        <>
+            <section className="board-list-section">
+                <h4 className="sub-title">카테고리</h4>
+                <div className="board-util">
+                    <p className="all-tx">전체 {categoryListData?.total.toLocaleString()}건</p>
+                    <form name="searchForm" id="searchForm" method="post">
+                    <input type="hidden" name="pageIndex" id="pageIndex" value="1"/>
+                    <div className="search-box">
+                        <div className="select-style">
+                            <label htmlFor="searchType">{searchType}</label>
+                            <select id="searchType" name="searchType" onChange={e=>onChangeHandler(e)} value={searchType+''}>
+                                <option value="" >검색조건</option>
+                                <option value="title" >제목</option>
+                                <option value="contents" >내용</option>
+                            </select>
                         </div>
-                        </form>
+                        <div className="search-text">
+                            <input type="text" className="input" title="검색어 입력" id="searchWord" name="searchWord" value={searchKeyWord+''}/>
+                            {/* <button className="btn-search searchBtn">
+                                <span className="hide">검색</span>
+                            </button> */}
+                        </div>
                     </div>
-
-                    <ul id="search-data" className="gallery-list collabo" style={{height:600, overflowY:'auto'}}>
-                        {categoryListData && categoryListData.categories && categoryListData.categories.map((category)=>
-                        <CategoryCard key={category.categoryId} category={category}/> 
-                        )}
-                    </ul>
-                    <div id="paging-area">
-                        <Pagination 
-                            activePage={page} // 현재 페이지
-                            itemsCountPerPage={categoryListData ? categoryListData.rows : 0} // 한 페이지에 보여줄 데이터 갯수
-                            totalItemsCount={categoryListData ? categoryListData.total : 0} // 총 데이터 갯수
-                            pageRangeDisplayed={10} // paginator의 페이지 범위(한번에 보여줄 페이지 범위)
-                            onChange={handlePageChange} // 페이지 변경을 핸들링하는 함수
-                        />
-                    </div>
-                    <div className="btn-area right">
-                        <button className="btn btn-primary" onClick={e=>setMode(MODE.CATEGORY_REG)}>카테고리 생성</button>&nbsp;
-                        <button className="btn btn-line red" onClick={deleteCategory}>삭제</button>
-                    </div>
-                </section>
-                
-                <div className="btn-top">
-                    <button type="button"><span>TOP</span></button>
+                    </form>
                 </div>
-            </article>
-        </div>
+
+                <ul id="search-data" className="gallery-list collabo" style={{height:600, overflowY:'auto'}}>
+                    {categoryListData && categoryListData.categories && categoryListData.categories.map((category)=>
+                    <CategoryCard key={category.categoryId} category={category}/> 
+                    )}
+                </ul>
+                <div id="paging-area">
+                    <Pagination 
+                        activePage={page} // 현재 페이지
+                        itemsCountPerPage={categoryListData ? categoryListData.rows : 0} // 한 페이지에 보여줄 데이터 갯수
+                        totalItemsCount={categoryListData ? categoryListData.total : 0} // 총 데이터 갯수
+                        pageRangeDisplayed={10} // paginator의 페이지 범위(한번에 보여줄 페이지 범위)
+                        onChange={handlePageChange} // 페이지 변경을 핸들링하는 함수
+                    />
+                </div>
+                <div className="btn-area right">
+                    <button className="btn btn-primary" onClick={e=>setMode(MODE.CATEGORY_REG)}>카테고리 생성</button>&nbsp;
+                    <button className="btn btn-line red" onClick={deleteCategory}>삭제</button>
+                </div>
+            </section>
+            
+            <div className="btn-top">
+                <button type="button"><span>TOP</span></button>
+            </div>
+        </>
     )
 }
 

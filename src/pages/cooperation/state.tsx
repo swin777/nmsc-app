@@ -41,15 +41,33 @@ export const selectAttachFileUsq = atom<string|null>({
     default: null
 });
 
+export const categorySearchType = atom<string|null>({
+    key: 'categorySearchType', 
+    default: null
+});
+
+export const categorySearchKeyWord = atom<string|null>({
+    key: 'categorySearchKeyWord', 
+    default: ''
+});
+
+export const topicSearchType = atom<string|null>({
+    key: 'topicSearchType', 
+    default: null
+});
+
+export const topicSearchKeyWord = atom<string|null>({
+    key: 'topicSearchKeyWord', 
+    default: ''
+});
+
 export const listCategories = selectorFamily<CategoryListData|null, any>({
     key: 'listCategories',
     get: (params:any) => async ({get}) => {
         get(categoryRefresh);
         try{
-            let param:any = {
-                
-            }
-            let res:any = await serverCall(`/homepage/html/base/collaboration/listCategories.do`, 'GET', null)
+            let param = categorySearchType ? `?${get(categorySearchType)}=${get(categorySearchKeyWord)}` : ''
+            let res:any = await serverCall(`/homepage/html/base/collaboration/listCategories.do${param}`, 'GET', null)
             if(res.data && res.data.data){
                 let data = res.data
                 let category:Category[]= data.data.map((ele: any) => plainToInstance(Category, ele))
@@ -74,7 +92,8 @@ export const listTopics = selectorFamily<TopicListData|null, any>({
             return null;
         }
         try{
-            let res:any = await serverCall(`/homepage/html/base/collaboration/listTopics.do?categoryId=${get(selectCatory)?.categoryId}`, 'GET', null)
+            let param = topicSearchType ? `&${get(topicSearchType)}=${get(topicSearchKeyWord)}` : ''
+            let res:any = await serverCall(`/homepage/html/base/collaboration/listTopics.do?categoryId=${get(selectCatory)?.categoryId}${param}`, 'GET', null)
             if(res.data && res.data.data){
                 let data = res.data
                 let topic:Topic[]= data.data.map((ele: any) => plainToInstance(Topic, ele))

@@ -111,52 +111,50 @@ const TopicIntro = () => {
     }
 
     return(
-        <div className="content-wrap">
-            <article id="content">
-                <div className="collabo_title">
-                    <div className="sub-title_wrap">
-                        <h3 className="sub-title">{topicDetail?.topic.title} </h3>
-                        <h4 className="sub-title">{category?.title}</h4>
-                    </div>
-                    <div className="button_wrap">
-                        <button className="btn btn-line upload" style={{width:60}} onClick={()=>setMode(MODE.TOPIC_REG)}>업로드</button>
-                        {/* <button className="btn btn-line download">전체 다운로드</button> */}
-                    </div>
+        <>
+            <div className="collabo_title">
+                <div className="sub-title_wrap">
+                    <h3 className="sub-title">{topicDetail?.topic.title} </h3>
+                    <h4 className="sub-title">{category?.title}</h4>
                 </div>
-                <section className="tap-section">
-                    <div className="tab-menu">
-                        <div className="tab-btn">
-                            <ul>
-                                <li className={tabMode===TAB_MODE.FILE ? 'active' : ''}><a href="javascript:void()" onClick={()=>setTabMode(TAB_MODE.FILE)}>Files</a></li>
-                                <li className={tabMode===TAB_MODE.HISTORY ? 'active' : ''}><a href="javascript:void()" onClick={()=>setTabMode(TAB_MODE.HISTORY)}>History</a></li>
-                            </ul>
-                            <div className="group">
-                                <span className="date">{topicDetail && topicDetail.history.length>0 && topicDetail.history[0].regDate} 수정</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                                {/* <button className="btn btn-primary" onClick={goList}>목록</button> */}
-                            </div>
-                           
+                <div className="button_wrap">
+                    <button className="btn btn-line upload" style={{width:60}} onClick={()=>setMode(MODE.TOPIC_REG)}>업로드</button>
+                    {/* <button className="btn btn-line download">전체 다운로드</button> */}
+                </div>
+            </div>
+            <section className="tap-section">
+                <div className="tab-menu">
+                    <div className="tab-btn">
+                        <ul>
+                            <li className={tabMode===TAB_MODE.FILE ? 'active' : ''}><a href="javascript:void()" onClick={()=>setTabMode(TAB_MODE.FILE)}>Files</a></li>
+                            <li className={tabMode===TAB_MODE.HISTORY ? 'active' : ''}><a href="javascript:void()" onClick={()=>setTabMode(TAB_MODE.HISTORY)}>History</a></li>
+                        </ul>
+                        <div className="group">
+                            <span className="date">{topicDetail && topicDetail.history.length>0 && topicDetail.history[0].regDate} 수정</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                            {/* <button className="btn btn-primary" onClick={goList}>목록</button> */}
                         </div>
-                        <div className="tab-cont scroll_y">
-                            <div className="tab">
-                                <div className="file_upload_result scroll_y">
-                                {topicDetail && topicDetail.history.length>0 && topicDetail.history[0].files.map((file)=>
-                                <div className="file_wrap" style={{cursor:'pointer', backgroundColor:selectAttachFileUsq===file.attachFileUsq ? '#dae9f4': '#fff'}} 
-                                    onClick={()=>setSelectAttachFileUsq(file.attachFileUsq)}>
-                                    <span className="file_name">{file.originalFileName}</span>
-                                </div>
-                                )}
-                                </div>
+                        
+                    </div>
+                    <div className="tab-cont scroll_y">
+                        <div className="tab">
+                            <div className="file_upload_result scroll_y">
+                            {topicDetail && topicDetail.history.length>0 && topicDetail.history[0].files.map((file)=>
+                            <div className="file_wrap" style={{cursor:'pointer', backgroundColor:selectAttachFileUsq===file.attachFileUsq ? '#dae9f4': '#fff'}} 
+                                onClick={()=>setSelectAttachFileUsq(file.attachFileUsq)}>
+                                <span className="file_name">{file.originalFileName}</span>
+                            </div>
+                            )}
                             </div>
                         </div>
-                        {tabMode===TAB_MODE.FILE && <FileContent str={fileStr}/>}
-                        {tabMode===TAB_MODE.HISTORY && <HistoryContent historyArr={topicDetail?.history} categoryId={category?.categoryId} topicId={topicDetail?.topic.topicId} topicName={topicDetail?.topic.title}/>}
                     </div>
-                </section>
-                <div className="btn-area right">
-                    <button className="btn btn-primary" onClick={goList}>목록</button>
+                    {tabMode===TAB_MODE.FILE && <FileContent str={fileStr}/>}
+                    {tabMode===TAB_MODE.HISTORY && <HistoryContent historyArr={topicDetail?.history} categoryId={category?.categoryId} topicId={topicDetail?.topic.topicId} topicName={topicDetail?.topic.title}/>}
                 </div>
-            </article>
-        </div>
+            </section>
+            <div className="btn-area right">
+                <button className="btn btn-primary" onClick={goList}>목록</button>
+            </div>
+        </>
     )
 }
 

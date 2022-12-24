@@ -8,7 +8,7 @@ const TopicIntro = () => {
     const mode = useRecoilValue(modeAtom);
     return(
         <>
-            <div style={{display:mode===MODE.TOPIC_LIST ? 'block' : 'none'}}><TopicList/></div>
+            <div style={{display:mode===MODE.TOPIC_LIST ? '' : 'none', overflow:'hidden'}}><TopicList/></div>
             { mode===MODE.TOPIC_REG && <TopicReg/> }
             { mode===MODE.TOPIC_DETAIL && <TopicDetail/> }
         </>

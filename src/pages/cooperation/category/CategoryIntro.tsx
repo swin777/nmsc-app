@@ -8,7 +8,7 @@ const CategoryIntro = () => {
 
     return(
         <>
-            <div style={{display:mode===MODE.CATEGORY_LIST ? 'block' : 'none'}}><CategoryList/></div>
+            <div style={{display:mode===MODE.CATEGORY_LIST ? '' : 'none', overflow:'hidden'}}><CategoryList/></div>
             { mode===MODE.CATEGORY_REG && <CategoryReg/> }
         </>
     )

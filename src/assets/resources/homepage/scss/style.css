@@ -3267,9 +3267,9 @@ board style
   display: table;
 }
 .search-box .search-text .input {
-  float: left;
+  /* float: left;
   width: 206px;
-  border-right: 0;
+  border-right: 1; */
 }
 .search-box .search-text .btn-search {
   float: left;

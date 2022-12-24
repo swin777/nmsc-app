@@ -73,11 +73,11 @@ html, body, h1, h2, h3, h4, h5, h6, strong, table th, input, textarea, select, b
     letter-spacing: -.15px;
 }
 
-html, body {
+/* html, body {
     height: 100%;
-    min-width: 1120px;
+    min-width: 1100px;
     position: relative;
-}
+} */
 
 input[type=button], input[type=text], input[type=image], input[type=submit], textarea, select {
     -webkit-appearance: none;
@@ -3137,9 +3137,9 @@ board style
 }
 
 .search-box .search-text .input {
-    float: left;
+    /* float: left;
     width: 206px;
-    border-right: 0;
+    border-right: 0; */
 }
 
 .search-box .search-text .btn-search {
@@ -7716,11 +7716,11 @@ textarea.nmsc_input {
         background-color: #fff;
     }
 
-    html, body {
+    /* html, body {
         height: 100%;
         min-width: 100%;
         position: relative;
-    }
+    } */
 
     .link-section .cube {
         width: 100%;
@@ -8221,11 +8221,11 @@ textarea.nmsc_input {
         background-color: #fff;
     }
 
-    html, body {
+    /* html, body {
         height: 100%;
-        min-width: 1120px;
+        min-width: 1100px;
         position: relative;
-    }
+    } */
 
     .link-section .cube {
         float: left;

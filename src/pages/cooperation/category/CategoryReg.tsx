@@ -24,37 +24,35 @@ const CategoryReg = () => {
     }
 
     return(
-        <div className="content-wrap">
-            <article id="content">
-                <section className="board-list-section" style={{margin:0}}>
-                    <h4 className="sub-title">카테고리</h4>
-                    <div className="board-util">
-                        <input type="text" className="input" title="제목을 입력해 주세요." id="categoryTitle" value={category.title} placeholder="제목을 입력해 주세요."
-                            onChange={e=>setCategory({...category, title:e.target.value})}/>
-                        <CKEditor
-                            editor={ClassicEditor}
-                            onChange={(event:any, editor:any) => {
-                                setCategory(category => category = {...category, contents:editor.getData()});
-                            }}
-                            onReady={(editor:any) => {
-                                editor.editing.view.change((writer:any) => {
-                                    writer.setStyle("height","400px",editor.editing.view.document.getRoot());
-                                });
-                            }}
-                        />
-                        <input type="text" className="input" title="#태그를 입력해 주세요." id="categoryTags" value={category.tags} placeholder="#태그를 입력해 주세요."
-                            onChange={e=>setCategory({...category, tags:e.target.value})}/>
-                    </div>
-                    <div className="btn-area right">
-                        <button className="btn btn-primary" onClick={reg}>생성</button>&nbsp;
-                        <button className="btn btn-gray" onClick={e=>setMode(MODE.CATEGORY_LIST)}>취소</button>
-                    </div>
-                </section>
-                <div className="btn-top">
-                    <button type="button"><span>TOP</span></button>
+        <>
+            <section className="board-list-section">
+                <h4 className="sub-title">카테고리</h4>
+                <div className="board-util">
+                    <input type="text" className="input" title="제목을 입력해 주세요." id="categoryTitle" value={category.title} placeholder="제목을 입력해 주세요."
+                        onChange={e=>setCategory({...category, title:e.target.value})}/>
+                    <CKEditor
+                        editor={ClassicEditor}
+                        onChange={(event:any, editor:any) => {
+                            setCategory(category => category = {...category, contents:editor.getData()});
+                        }}
+                        onReady={(editor:any) => {
+                            editor.editing.view.change((writer:any) => {
+                                writer.setStyle("height","400px",editor.editing.view.document.getRoot());
+                            });
+                        }}
+                    />
+                    <input type="text" className="input" title="#태그를 입력해 주세요." id="categoryTags" value={category.tags} placeholder="#태그를 입력해 주세요."
+                        onChange={e=>setCategory({...category, tags:e.target.value})}/>
                 </div>
-            </article>
-        </div>
+                <div className="btn-area right">
+                    <button className="btn btn-primary" onClick={reg}>생성</button>&nbsp;
+                    <button className="btn btn-gray" onClick={e=>setMode(MODE.CATEGORY_LIST)}>취소</button>
+                </div>
+            </section>
+            <div className="btn-top">
+                <button type="button"><span>TOP</span></button>
+            </div>
+        </>
     )
 }
 

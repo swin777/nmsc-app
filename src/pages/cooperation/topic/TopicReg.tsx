@@ -144,72 +144,70 @@ const TopicReg = () => {
     }
 
     return(
-        <div className="content-wrap">
-            <article id="content">
-                <section className="board-list-section" style={{margin:0}}>
-                    <h4 className="sub-title">{category?.title}</h4>
-                    {!selectTopic &&
-                    <>
-                    <input type="text" className="input" title="제목을 입력해 주세요." id="topicTitle" value={uploadTopic.title} placeholder="제목을 입력해 주세요."
-                        onChange={e=>setUploadTopic({...uploadTopic, title:e.target.value})}/>
-                    <CKEditor
-                        data={uploadTopic.contents}
-                        editor={ClassicEditor}
-                        onChange={(event:any, editor:any) => {
-                            setUploadTopic(uploadTopic => uploadTopic = {...uploadTopic, contents:editor.getData()});
-                        }}
-                        onReady={(editor:any) => {
-                            editor.editing.view.change((writer:any) => {
-                                writer.setStyle("height","400px",editor.editing.view.document.getRoot());
-                            });
-                        }}
-                    />
-                    <input type="text" className="input" title="프로그램언어를 입력해 주세요." id="categoryTags" value={uploadTopic.language} placeholder="프로그램언어를 입력해 주세요."
-                            onChange={e=>setUploadTopic({...uploadTopic, language:e.target.value})}/>
-                    </>
-                    }
-                    <div className="file_upload_wrap">
-                        <div className="divide_wrap">
-                            <div className="file_upload_label">
-                                <label htmlFor="file_upload">찾아보기</label>
-                                <input type="file" className="input" id="file_upload" multiple={true} onChange={onChangeFiles} ref={file}/>
-                            </div>
-                            <div className="divide_box file_upload_result scroll_y" ref={dragRef}>
-                            {files.length > 0 &&
-                                files.map((file: IFileTypes) => {
-                                const {id, object: {name}} = file;
-                                return (
-                                    <div key={id}>
-                                        <div className="file_wrap" style={{display:'flex', justifyContent:'space-between', padding:'0 10px 0 4px', marginBottom:0}}>
-                                            <span className="file_name">{name}</span>
-                                            <div className="DragDrop-Files-Filter"onClick={() => handleFilterFile(id)}>
-                                                삭제
-                                            </div>
+        <>
+            <section className="board-list-section">
+                <h4 className="sub-title">{category?.title}</h4>
+                {!selectTopic &&
+                <>
+                <input type="text" className="input" title="제목을 입력해 주세요." id="topicTitle" value={uploadTopic.title} placeholder="제목을 입력해 주세요."
+                    onChange={e=>setUploadTopic({...uploadTopic, title:e.target.value})}/>
+                <CKEditor
+                    data={uploadTopic.contents}
+                    editor={ClassicEditor}
+                    onChange={(event:any, editor:any) => {
+                        setUploadTopic(uploadTopic => uploadTopic = {...uploadTopic, contents:editor.getData()});
+                    }}
+                    onReady={(editor:any) => {
+                        editor.editing.view.change((writer:any) => {
+                            writer.setStyle("height","400px",editor.editing.view.document.getRoot());
+                        });
+                    }}
+                />
+                <input type="text" className="input" title="프로그램언어를 입력해 주세요." id="categoryTags" value={uploadTopic.language} placeholder="프로그램언어를 입력해 주세요."
+                        onChange={e=>setUploadTopic({...uploadTopic, language:e.target.value})}/>
+                </>
+                }
+                <div className="file_upload_wrap">
+                    <div className="divide_wrap">
+                        <div className="file_upload_label">
+                            <label htmlFor="file_upload">찾아보기</label>
+                            <input type="file" className="input" id="file_upload" multiple={true} onChange={onChangeFiles} ref={file}/>
+                        </div>
+                        <div className="divide_box file_upload_result scroll_y" ref={dragRef}>
+                        {files.length > 0 &&
+                            files.map((file: IFileTypes) => {
+                            const {id, object: {name}} = file;
+                            return (
+                                <div key={id}>
+                                    <div className="file_wrap" style={{display:'flex', justifyContent:'space-between', padding:'0 10px 0 4px', marginBottom:0}}>
+                                        <span className="file_name">{name}</span>
+                                        <div className="DragDrop-Files-Filter"onClick={() => handleFilterFile(id)}>
+                                            삭제
                                         </div>
                                     </div>
-                                );
-                                })}
-                            </div>
-                        </div>
-                        <div className="divide_wrap">
-                            <h5 className="title">comment</h5>
-                            <div style={{paddingBottom:12}}></div>
-                            <CKEditor
-                                editor={ClassicEditor}
-                                onChange={(event:any, editor:any) => {
-                                    setUploadTopic(uploadTopic => uploadTopic = {...uploadTopic, comments:editor.getData()});
-                                }}
-                                config={{toolbar:[]}}
-                            />
+                                </div>
+                            );
+                            })}
                         </div>
                     </div>
-                    <div className="btn-area right">
-                        <button className="btn btn-primary" onClick={topicReg}>생성</button>&nbsp;
-                        <button className="btn btn-gray" onClick={()=>setMode(selectTopic ? MODE.TOPIC_DETAIL : MODE.TOPIC_LIST)}>취소</button>
+                    <div className="divide_wrap">
+                        <h5 className="title">comment</h5>
+                        <div style={{paddingBottom:12}}></div>
+                        <CKEditor
+                            editor={ClassicEditor}
+                            onChange={(event:any, editor:any) => {
+                                setUploadTopic(uploadTopic => uploadTopic = {...uploadTopic, comments:editor.getData()});
+                            }}
+                            config={{toolbar:[]}}
+                        />
                     </div>
-                </section>
-            </article>
-        </div>
+                </div>
+                <div className="btn-area right">
+                    <button className="btn btn-primary" onClick={topicReg}>생성</button>&nbsp;
+                    <button className="btn btn-gray" onClick={()=>setMode(selectTopic ? MODE.TOPIC_DETAIL : MODE.TOPIC_LIST)}>취소</button>
+                </div>
+            </section>
+        </>
     )
 }
 
