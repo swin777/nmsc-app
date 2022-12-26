@@ -112,7 +112,8 @@ const TopicList = () => {
                     </div>
                     </form>
                 </div>
-                <div style={{height:700, overflowY:'auto'}}>
+                {/* <div style={{height:700, overflowY:'auto'}}> */}
+                <div>
                     {topicListData && topicListData.topics && topicListData.topics.map((topic)=>
                     <TopicCard key={topic.topicId} topic={topic}/> 
                     )}

@@ -48,7 +48,8 @@ const HistoryContent = ({historyArr, categoryId, topicId, topicName}:HistoryProp
     }
 
     return(
-        <div className="history_wrap" style={{height:480, overflowY:'auto'}}>
+        // <div className="history_wrap" style={{height:480, overflowY:'auto'}}>
+        <div className="history_wrap">
             {historyArr && historyArr.map((history)=>
             <div className="history_box">
                 <div className="history_thumbnail">

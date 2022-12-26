@@ -115,7 +115,8 @@ const CategoryList = () => {
                     </form>
                 </div>
 
-                <ul id="search-data" className="gallery-list collabo" style={{height:600, overflowY:'auto'}}>
+                {/* <ul id="search-data" className="gallery-list collabo" style={{height:600, overflowY:'auto'}}> */}
+                <ul id="search-data" className="gallery-list collabo">
                     {categoryListData && categoryListData.categories && categoryListData.categories.map((category)=>
                     <CategoryCard key={category.categoryId} category={category}/> 
                     )}
