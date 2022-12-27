@@ -23,6 +23,7 @@
     "axios": "^1.2.1",
     "class-transformer": "^0.5.1",
     "highlight.js": "^11.7.0",
+    "json2csv": "^5.0.7",
     "linq": "^4.0.1",
     "npm": "^9.2.0",
     "react": "^18.2.0",

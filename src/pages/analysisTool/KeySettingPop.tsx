@@ -66,7 +66,7 @@ const KeySettingPop = () => {
                         </tbody>
                     </table>
                     {/* <div className="btn-area right">
-                        <button className="btn btn-primary">확인</button>&nbsp;
+                        <button className="btn btn-primary">적용</button>&nbsp;
                         <button className="btn btn-gray close" onClick={()=>setKeySettingPopYn(false)}>취소</button>
                     </div> */}
                 </div>

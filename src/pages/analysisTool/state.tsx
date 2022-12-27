@@ -3,6 +3,7 @@ import { atom } from "recoil";
 export interface GridData {
     columnDefs: Array<object>;
     rowData: Array<object>;
+    editData: Array<object>|null;
 }
 
 export const leftGridData = atom<GridData|null>({

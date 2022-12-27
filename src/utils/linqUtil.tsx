@@ -47,3 +47,15 @@ _Enumerable.from(leftData)
           (fk:any) => fk.orderId,
           (left:any, right:any) => ({ ...left, ...right })
   ).toArray();
+
+addEventListener('message', async function (e) {
+  const type = e.data.type;
+  if(type==='_join_'){
+    //postMessage(_join_(e.data.leftData, e.data.rightData, e.data.leftKey, e.data.rightKey));
+    postMessage('dddd');
+  }else if(type==='_leftJoin_'){
+    postMessage(_leftJoin_(e.data.leftData, e.data.rightData, e.data.leftKey, e.data.rightKey));
+  }else if(type==='_rightJoin_'){
+    postMessage(_rightJoin_(e.data.leftData, e.data.rightData, e.data.leftKey, e.data.rightKey));
+  }
+});
