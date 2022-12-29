@@ -13,6 +13,11 @@ import KeySettingPop from "./KeySettingPop";
 import { _join_, _leftJoin_ } from "../../utils/linqUtil";
 import { CellValueChangedEvent, FilterChangedEvent } from "ag-grid-community/dist/lib/events";
 import LinqWorker  from "../../utils/linqWorker?worker";
+import { Bar } from "react-chartjs-2";
+import { faker } from "@faker-js/faker";
+import {CategoryScale} from 'chart.js'; 
+import Chart from 'chart.js/auto';
+Chart.register(CategoryScale);
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -28,7 +33,42 @@ type SelectSCVProps = {
     setOperationTool?:any
 }
 
-const SelectCSVArea = ({input, gridData, setGridData, setOperationTool}:SelectSCVProps) => {
+const ResultChart = () => {
+    const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+    const options = {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top' as const,
+          },
+          title: {
+            display: true,
+            text: 'Chart.js Bar Chart',
+          },
+        },
+    };
+    const data = {
+        labels,
+        datasets: [
+            {
+                label: 'Dataset 1',
+                data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            },
+            {
+                label: 'Dataset 2',
+                data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
+                backgroundColor: 'rgba(53, 162, 235, 0.5)',
+            },
+        ],
+    }
+
+    return (
+        <Bar options={options} data={data} />
+    )
+}
+
+const SelectCSVGrid = ({input, gridData, setGridData, setOperationTool}:SelectSCVProps) => {
     const dragRef = useRef<HTMLDivElement | null>(null);
     const setLeftJoinKey = useSetRecoilState(leftJoinKeyAtom);
     const setRightJoinKey = useSetRecoilState(rightJoinKeyAtom);
@@ -158,7 +198,7 @@ const SelectCSVArea = ({input, gridData, setGridData, setOperationTool}:SelectSC
             {!gridData && <p>파일을 드래그 & 드롭하여 업로드</p>}
             {gridData &&
             <div style={{height: '100%',width: '100%',}}className="ag-theme-alpine">
-                <button onClick={addRow}>add</button>
+                {/* <button onClick={addRow}>add</button> */}
                 <AgGridReact
                     columnDefs={gridData.columnDefs}
                     onGridReady = {(params:any) => {gridApi.current=params.api; params.api.setRowData(JSON.parse(JSON.stringify(gridData.rowData)))}}
@@ -202,6 +242,7 @@ const GeneralUser = () => {
     const [leftOperationTool, setLeftOperationTool] = useState<any>({});
     const [rightOperationTool, setrightOperationTool] = useState<any>({});
     const [loading, setLoading] = useState<boolean>(false);
+    const [chartYN, setChartYN] = useState<boolean>(false);
 
     const join = async(type:string) => {
         if(!leftGridData){
@@ -262,7 +303,7 @@ const GeneralUser = () => {
                             <span className="expand" title="확대보기" onClick={()=>{setLRArea(lrArea => lrArea = lrArea===0 ? -1 : 0)}}>확대보기</span>
                         </div>
                     </div>
-                    <SelectCSVArea input={leftFile} gridData={leftGridData} setGridData={setLeftGridData} setOperationTool={setLeftOperationTool}/>
+                    <SelectCSVGrid input={leftFile} gridData={leftGridData} setGridData={setLeftGridData} setOperationTool={setLeftOperationTool}/>
                 </div>
                 <div className="board-view-section" style={{width:lrArea===0 ? '50%' : lrArea===1 ? '100%' : '0%', display:lrArea===-1 ? 'none' : ''}}>
                     <div className="board-header">
@@ -281,7 +322,7 @@ const GeneralUser = () => {
                             <span className="expand" title="확대보기" onClick={()=>{setLRArea(lrArea => lrArea = lrArea===0 ? 1 : 0)}}>확대보기</span>
                         </div>
                     </div>
-                    <SelectCSVArea input={rightFile} gridData={rightGridData} setGridData={setRightGridData} setOperationTool={setrightOperationTool}/>
+                    <SelectCSVGrid input={rightFile} gridData={rightGridData} setGridData={setRightGridData} setOperationTool={setrightOperationTool}/>
                 </div>
                 <span className="warnning right">* 파일 확장자는 csv만 가능 합니다</span>
             </section>
@@ -316,11 +357,15 @@ const GeneralUser = () => {
                 </div>
                 <div className="btn-area right mt20">
                     <button className="btn btn-line excel" onClick={exportCSV}>엑셀다운로드</button>&nbsp;
-                    <button className="btn btn-line chart">차트보기</button>
+                    <button className="btn btn-line chart" onClick={()=>setChartYN(true)}>차트보기</button>
                 </div>
-                {/* <div className="chart_area">
-                    <span>차트영역입니다.</span>
-                </div> */}
+                {joinGridData && !loading && chartYN &&
+                
+                    <div style={{display:"flex", justifyItems:'cenlefter'}}>
+                    <ResultChart/>
+                    </div>
+                
+                }
             </section>
             <KeySettingPop/>
         </>
