@@ -10192,6 +10192,12 @@ card-header:first-child {
     .inner_row .inner_left .card-title { margin: 1.2rem 0;}
 }
 
+.loading {
+    background: transparent url("../images/loading.gif") no-repeat 0 0;
+    width: 200px;
+    height:200px;
+}
+
 
 
 

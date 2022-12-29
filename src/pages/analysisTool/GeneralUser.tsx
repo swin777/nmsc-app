@@ -351,8 +351,10 @@ const GeneralUser = () => {
                     />
                 </div>
                 }
-                {loading &&
-                <div style={{zIndex:1000, display:"flex", justifyContent:'center'}}><img src="resources/common/images/loading.gif"/></div>
+                {true &&
+                <div style={{zIndex:1000, display:"flex", justifyContent:'center'}}>
+                    <div className="loading"/>
+                </div>
                 }
                 </div>
                 <div className="btn-area right mt20">
@@ -364,7 +366,6 @@ const GeneralUser = () => {
                     <div style={{display:"flex", justifyItems:'cenlefter'}}>
                     <ResultChart/>
                     </div>
-                
                 }
             </section>
             <KeySettingPop/>
