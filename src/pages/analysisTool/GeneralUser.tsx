@@ -351,7 +351,7 @@ const GeneralUser = () => {
                     />
                 </div>
                 }
-                {true &&
+                {loading &&
                 <div style={{zIndex:1000, display:"flex", justifyContent:'center'}}>
                     <div className="loading"/>
                 </div>
