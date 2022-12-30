@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { useRecoilValue, useRecoilValueLoadable, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useRecoilValueLoadable, useSetRecoilState } from "recoil";
 import { Topic, TopicListData } from "../../../models/topic";
 import { serverCall } from "../../../utils/apiCallUtil";
-import { listTopics, MODE, mode, selectCatory, selectTopic, topicDetailRefresh, topicRefresh } from "../state";
+import { listTopics, MODE, mode, SEARCH_TYPE, selectCatory, selectTopic, topicDetailRefresh, topicRefresh, topicSearchKeyWord, topicSearchType } from "../state";
 
 type TopicProps = {
     topic: Topic|null,
@@ -65,6 +65,9 @@ const TopicList = () => {
     const setSelectTopic = useSetRecoilState(selectTopic) 
     const setTopicRefresh = useSetRecoilState(topicRefresh);
 
+    const [searchType, setSearchType] = useRecoilState(topicSearchType)
+    const [searchKeyWord, setSearchKeyWord] = useRecoilState(topicSearchKeyWord)
+
     const goTopicReg = () => {
         setSelectTopic(null)
         setMode(MODE.TOPIC_REG)
@@ -102,11 +105,16 @@ const TopicList = () => {
                     <input type="hidden" name="pageIndex" id="pageIndex" value="1"/>
                     <div className="search-box">
                         <div className="select-style">
-                            <label htmlFor="searchType">검색조건</label>
-                            <select id="searchType" name="searchType"><option value="">검색조건</option><option value="TITLE">제목</option><option value="CONTENTS">내용</option></select>
+                            <label htmlFor="searchType">{searchType}</label>
+                            <select id="searchType" name="searchType" onChange={e=>setSearchType(e.target.value+'')} value={searchType+''}>
+                                {/* <option value="" >검색조건</option> */}
+                                <option value={SEARCH_TYPE.searchTitle} >{SEARCH_TYPE.searchTitle}</option>
+                                <option value={SEARCH_TYPE.searchContents} >{SEARCH_TYPE.searchContents}</option>
+                                {/* <option value={SEARCH_TYPE.searchAuthor} >{SEARCH_TYPE.searchAuthor}</option> */}
+                            </select>
                         </div>
                         <div className="search-text">
-                            <input type="text" className="input" title="검색어 입력" id="searchWord" name="searchWord" value=""/>
+                            <input type="text" className="input" title="검색어 입력" id="searchWord" name="searchWord" onChange={(e)=>setSearchKeyWord(e.target.value)}/>
                             {/* <button className="btn-search searchBtn"><span className="hide">검색</span></button> */}
                         </div>
                     </div>

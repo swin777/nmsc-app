@@ -6,10 +6,29 @@ import { serverCall } from "../../utils/apiCallUtil";
 
 export enum MODE {CATEGORY_LIST, CATEGORY_REG, TOPIC_LIST, TOPIC_DETAIL, TOPIC_REG}
 
+export enum SEARCH_TYPE {
+    searchTitle = '제목',
+    searchContents = '내용',
+    searchAuthor = '사용자',
+}
+
 export const mode = atom<MODE>({
     key: 'mode', 
     default: MODE.CATEGORY_LIST
 });
+
+export const convertString = (enumType:any, value:any):string => {
+    let match = Object.keys(enumType).filter(e => e===value)
+    return match.length > 0 ? enumType[match.toString()]: value
+} 
+
+export const convertCode = (enumType:any, value:any):string|null => {
+    if(!value){
+        return null;
+    }
+    let match = Object.keys(enumType).filter(e => enumType[e]===value)
+    return match.length > 0 ? match[0] : null
+}
 
 export const categoryRefresh = atom<number>({
     key: 'categoryRefresh', 
@@ -43,7 +62,7 @@ export const selectAttachFileUsq = atom<string|null>({
 
 export const categorySearchType = atom<string|null>({
     key: 'categorySearchType', 
-    default: null
+    default: convertString(SEARCH_TYPE, SEARCH_TYPE.searchTitle)
 });
 
 export const categorySearchKeyWord = atom<string|null>({
@@ -53,7 +72,7 @@ export const categorySearchKeyWord = atom<string|null>({
 
 export const topicSearchType = atom<string|null>({
     key: 'topicSearchType', 
-    default: null
+    default: convertString(SEARCH_TYPE, SEARCH_TYPE.searchTitle)
 });
 
 export const topicSearchKeyWord = atom<string|null>({
@@ -66,7 +85,7 @@ export const listCategories = selectorFamily<CategoryListData|null, any>({
     get: (params:any) => async ({get}) => {
         get(categoryRefresh);
         try{
-            let param = categorySearchType ? `?${get(categorySearchType)}=${get(categorySearchKeyWord)}` : ''
+            let param = categorySearchType ? `?${convertCode(SEARCH_TYPE, get(categorySearchType))}=${get(categorySearchKeyWord)}` : ''
             let res:any = await serverCall(`/homepage/html/base/collaboration/listCategories.do${param}`, 'GET', null)
             if(res.data && res.data.data){
                 let data = res.data
@@ -92,7 +111,7 @@ export const listTopics = selectorFamily<TopicListData|null, any>({
             return null;
         }
         try{
-            let param = topicSearchType ? `&${get(topicSearchType)}=${get(topicSearchKeyWord)}` : ''
+            let param = topicSearchType ? `&${convertCode(SEARCH_TYPE, get(topicSearchType))}=${get(topicSearchKeyWord)}` : ''
             let res:any = await serverCall(`/homepage/html/base/collaboration/listTopics.do?categoryId=${get(selectCatory)?.categoryId}${param}`, 'GET', null)
             if(res.data && res.data.data){
                 let data = res.data
