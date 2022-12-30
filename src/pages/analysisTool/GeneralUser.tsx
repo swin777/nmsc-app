@@ -78,6 +78,7 @@ const ResultChart = () => {
                     <div className="select-style">
                         <label htmlFor="searchType">{xAxis}</label>
                         <select id="xAxis" onChange={e=>setXAxis(e.target.value)} value={xAxis}>
+                            <option value={''}></option>
                             {joinGridData?.columnDefs.map((column:any) =>
                             <option>{column.field}</option>
                             )}
@@ -89,6 +90,7 @@ const ResultChart = () => {
                     <div className="select-style">
                         <label htmlFor="searchType">{dataSet}</label>
                         <select id="xAxis" onChange={e=>setDataSet(e.target.value)} value={dataSet}>
+                            <option value={''}></option>
                             {joinGridData?.columnDefs.map((column:any) =>
                             <option>{column.field}</option>
                             )}
@@ -100,6 +102,7 @@ const ResultChart = () => {
                     <div className="select-style">
                         <label htmlFor="searchType">{yAxis}</label>
                         <select id="xAxis" onChange={e=>setYAxis(e.target.value)} value={yAxis}>
+                            <option value={''}></option>
                             {joinGridData?.columnDefs.map((column:any) =>
                             <option>{column.field}</option>
                             )}
