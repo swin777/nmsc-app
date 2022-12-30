@@ -72,7 +72,7 @@ const ResultChart = () => {
 
     return (
         <div>
-            <div style={{display:'flex', flexFlow:'row wrap', alignItems:'center', justifyContent:'space-evenly'}}>
+            <div style={{marginTop:14,  display:'flex', flexFlow:'row wrap', alignItems:'center', justifyContent:'space-evenly'}}>
                 <div style={{display:'flex', flexFlow:'column wrap', alignItems:'center'}}>
                     <h6>X축</h6>
                     <div className="select-style" style={{backgroundColor:'#fff'}}>
