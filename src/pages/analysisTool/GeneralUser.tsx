@@ -16,8 +16,10 @@ import LinqWorker  from "../../utils/linqWorker?worker";
 import { Bar } from "react-chartjs-2";
 import { faker } from "@faker-js/faker";
 import {CategoryScale} from 'chart.js'; 
+import autocolors from 'chartjs-plugin-autocolors';
 import Chart from 'chart.js/auto';
 Chart.register(CategoryScale);
+Chart.register(autocolors);
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -34,37 +36,83 @@ type SelectSCVProps = {
 }
 
 const ResultChart = () => {
-    const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-    const options = {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'top' as const,
-          },
-          title: {
-            display: true,
-            text: 'Chart.js Bar Chart',
-          },
-        },
-    };
-    const data = {
-        labels,
-        datasets: [
-            {
-                label: 'Dataset 1',
-                data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
-                backgroundColor: 'rgba(255, 99, 132, 0.5)',
-            },
-            {
-                label: 'Dataset 2',
-                data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
-                backgroundColor: 'rgba(53, 162, 235, 0.5)',
-            },
-        ],
-    }
+    const joinGridData = useRecoilValue<GridData|null>(joinGridDataAtom);
+    const [xAxis, setXAxis] = useState<string>('')
+    const [yAxis, setYAxis] = useState<string>('')
+    const [dataSet, setDataSet] = useState<string>('')
+    const [chartData, setChartData] = useState(null)
+
+    const options = { responsive: true, plugins: {legend: {position: 'top' as const}, title: {display: false,text: joinGridData?.rowData?.length+''}, autocolors}};
+
+    useEffect(()=>{
+        if(joinGridData &&xAxis!=='' && yAxis!=='' && dataSet!==''){
+            const labelUnique = new Set(joinGridData.rowData.map((e:any)=>e[xAxis]));
+            let labels = [...labelUnique];
+            const dataSetUnique = new Set(joinGridData.rowData.map((e:any)=>e[dataSet]));
+            let datasets = [...dataSetUnique].map((e:any) => {
+                return {
+                    label: e,
+                    data: labels.map((label:any) => joinGridData.rowData.reduce((sum:number, ele:any) => {
+                        if(ele[xAxis] === label){
+                            sum += isNaN(ele[yAxis]) ? 0 : parseInt(ele[yAxis])
+                        }
+                        return sum;
+                    }, 0)),
+                    //backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                }
+            })
+
+            let data:any = {
+                labels,
+                datasets: datasets
+            }
+            setChartData(data);
+        }
+    },[joinGridData, xAxis, yAxis, dataSet])
 
     return (
-        <Bar options={options} data={data} />
+        <div>
+            <div style={{display:'flex', flexFlow:'row wrap', alignItems:'center', justifyContent:'space-evenly'}}>
+                <div style={{display:'flex', flexFlow:'column wrap', alignItems:'center'}}>
+                    <h6>X축</h6>
+                    <div className="select-style">
+                        <label htmlFor="searchType">{xAxis}</label>
+                        <select id="xAxis" onChange={e=>setXAxis(e.target.value)} value={xAxis}>
+                            {joinGridData?.columnDefs.map((column:any) =>
+                            <option>{column.field}</option>
+                            )}
+                        </select>
+                    </div>
+                </div>
+                <div style={{display:'flex', flexFlow:'column wrap', alignItems:'center'}}>
+                    <h6>데이터셋</h6>
+                    <div className="select-style">
+                        <label htmlFor="searchType">{dataSet}</label>
+                        <select id="xAxis" onChange={e=>setDataSet(e.target.value)} value={dataSet}>
+                            {joinGridData?.columnDefs.map((column:any) =>
+                            <option>{column.field}</option>
+                            )}
+                        </select>
+                    </div>
+                </div>
+                <div style={{display:'flex', flexFlow:'column wrap', alignItems:'center'}}>
+                    <h6>Y축</h6>
+                    <div className="select-style">
+                        <label htmlFor="searchType">{yAxis}</label>
+                        <select id="xAxis" onChange={e=>setYAxis(e.target.value)} value={yAxis}>
+                            {joinGridData?.columnDefs.map((column:any) =>
+                            <option>{column.field}</option>
+                            )}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            {(xAxis!=='' && yAxis!=='' && dataSet!=='' && chartData) ?
+                <Bar options={options} data={chartData} />
+              : <div className="chart_area"/>
+            }
+        </div>
+        
     )
 }
 
@@ -362,10 +410,7 @@ const GeneralUser = () => {
                     <button className="btn btn-line chart" onClick={()=>setChartYN(true)}>차트보기</button>
                 </div>
                 {joinGridData && !loading && chartYN &&
-                
-                    <div style={{display:"flex", justifyItems:'cenlefter'}}>
                     <ResultChart/>
-                    </div>
                 }
             </section>
             <KeySettingPop/>

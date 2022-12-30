@@ -21,6 +21,7 @@
     "ag-grid-react": "^28.2.1",
     "axios": "^1.2.1",
     "chart.js": "^4.1.1",
+    "chartjs-plugin-autocolors": "^0.2.0",
     "class-transformer": "^0.5.1",
     "faker": "^6.6.6",
     "highlight.js": "^11.7.0",
