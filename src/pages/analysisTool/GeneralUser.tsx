@@ -75,7 +75,7 @@ const ResultChart = () => {
             <div style={{display:'flex', flexFlow:'row wrap', alignItems:'center', justifyContent:'space-evenly'}}>
                 <div style={{display:'flex', flexFlow:'column wrap', alignItems:'center'}}>
                     <h6>X축</h6>
-                    <div className="select-style">
+                    <div className="select-style" style={{backgroundColor:'#fff'}}>
                         <label htmlFor="searchType">{xAxis}</label>
                         <select id="xAxis" onChange={e=>setXAxis(e.target.value)} value={xAxis}>
                             <option value={''}></option>
@@ -87,7 +87,7 @@ const ResultChart = () => {
                 </div>
                 <div style={{display:'flex', flexFlow:'column wrap', alignItems:'center'}}>
                     <h6>데이터셋</h6>
-                    <div className="select-style">
+                    <div className="select-style" style={{backgroundColor:'#fff'}}>
                         <label htmlFor="searchType">{dataSet}</label>
                         <select id="xAxis" onChange={e=>setDataSet(e.target.value)} value={dataSet}>
                             <option value={''}></option>
@@ -99,7 +99,7 @@ const ResultChart = () => {
                 </div>
                 <div style={{display:'flex', flexFlow:'column wrap', alignItems:'center'}}>
                     <h6>Y축</h6>
-                    <div className="select-style">
+                    <div className="select-style" style={{backgroundColor:'#fff'}}>
                         <label htmlFor="searchType">{yAxis}</label>
                         <select id="xAxis" onChange={e=>setYAxis(e.target.value)} value={yAxis}>
                             <option value={''}></option>

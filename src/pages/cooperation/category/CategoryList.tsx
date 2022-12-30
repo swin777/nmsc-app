@@ -93,7 +93,7 @@ const CategoryList = () => {
                     <form name="searchForm" id="searchForm" method="post">
                     <input type="hidden" name="pageIndex" id="pageIndex" value="1"/>
                     <div className="search-box">
-                        <div className="select-style">
+                        <div className="select-style" style={{backgroundColor:'#fff'}}>
                             <label htmlFor="searchType">{searchType}</label>
                             <select id="searchType" name="searchType" onChange={e=>setSearchType(e.target.value+'')} value={searchType+''}>
                                 {/* <option value="" >검색조건</option> */}

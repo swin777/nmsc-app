@@ -29,7 +29,7 @@ const KeySettingPop = () => {
                             <tr>
                                 <th>융합데이터 자료1</th>
                                 <td className="border_right">
-                                    <div className="select-style" style={{width:'100%'}}>
+                                    <div className="select-style" style={{width:'100%', backgroundColor:'#fff'}}>
                                         <label >{leftJoinKey ? leftJoinKey : ''}</label>
                                         <select id="leftKey"  onChange={(e)=>setLeftJoinKey(e.target.value)} value={leftJoinKey}>
                                             <option value={''}></option>
@@ -46,7 +46,7 @@ const KeySettingPop = () => {
                             <tr>
                                 <th>융합데이터 자료2</th>
                                 <td className="border_right">
-                                    <div className="select-style" style={{width:'100%'}}>
+                                    <div className="select-style" style={{width:'100%', backgroundColor:'#fff'}}>
                                         <label >{rightJoinKey ? rightJoinKey : ''}</label>
                                         <select id="rightKey" onChange={(e)=>setRightJoinKey(e.target.value)} value={rightJoinKey}>
                                             <option value={''}></option>
