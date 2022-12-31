@@ -107,6 +107,7 @@ const TopicReg = () => {
     }, [initDragEvents, resetDragEvents]);
 
     const topicReg = async() => {
+        if(!validate()){return}
         let formData = new FormData();
         
         files.forEach((file:IFileTypes) => {
@@ -141,6 +142,33 @@ const TopicReg = () => {
                 alert(res.error);
             }
         }
+    }
+
+    const validate = ():boolean => {
+        let result = true;
+        if(!selectTopic){
+            if(!uploadTopic.title){
+                alert("제목을 입력하세요.")
+                return result = false;
+            }
+            if(!uploadTopic.contents){
+                alert("내용을 입력하세요.")
+                return result = false;
+            }
+        }
+        if(!uploadTopic.language){
+            alert("언어를 입력하세요.")
+            return result = false;
+        }
+        if(!files || files.length<1){
+            alert("파일을 선택하세요.")
+            return result = false;
+        }
+        if(!uploadTopic.comments){
+            alert("코멘트을 입력하세요.")
+            return result = false;
+        }
+        return result;
     }
 
     return(
@@ -212,9 +240,3 @@ const TopicReg = () => {
 }
 
 export default TopicReg;
-
-/*
-    <div className="file_wrap">
-        <span className="file_name">첨부파일명</span>.py
-    </div>
-*/

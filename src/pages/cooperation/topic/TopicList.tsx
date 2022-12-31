@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRecoilState, useRecoilValue, useRecoilValueLoadable, useSetRecoilState } from "recoil";
+import PopLoading from "../../../components/PopLoading";
 import { Topic, TopicListData } from "../../../models/topic";
 import { serverCall } from "../../../utils/apiCallUtil";
 import { listTopics, MODE, mode, SEARCH_TYPE, selectCatory, selectTopic, topicDetailRefresh, topicRefresh, topicSearchKeyWord, topicSearchType } from "../state";
@@ -67,6 +68,7 @@ const TopicList = () => {
 
     const [searchType, setSearchType] = useRecoilState(topicSearchType)
     const [searchKeyWord, setSearchKeyWord] = useRecoilState(topicSearchKeyWord)
+    const [loading, setLoading] = useState<boolean>(false);
 
     const goTopicReg = () => {
         setSelectTopic(null)
@@ -85,15 +87,17 @@ const TopicList = () => {
 
     useMemo(()=>{
         if(topicListDataAtom?.state){
-            //loading
+            setLoading(true)
         }
         if(topicListDataAtom?.state === 'hasValue' && topicListDataAtom?.contents){
             setTopicListData(topicListDataAtom?.contents);
+            setLoading(false)
         }
     },[topicListDataAtom])
 
     return(
         <>
+            {loading && <PopLoading/>}
             <section className="board-list-section">
                 <div style={{display:'flex', justifyContent:'space-between'}}>
                     <h4 className="sub-title">{category?.title}</h4>

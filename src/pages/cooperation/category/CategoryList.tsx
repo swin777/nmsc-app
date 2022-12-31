@@ -4,6 +4,7 @@ import { categoryRefresh, listCategories, mode, MODE, selectCatory, topicRefresh
 import Pagination from "react-js-pagination";
 import { Category, CategoryListData } from "../../../models/category";
 import { serverCall } from "../../../utils/apiCallUtil";
+import PopLoading from "../../../components/PopLoading";
 
 type CategoryProps = {
     category: Category|null,
@@ -59,6 +60,7 @@ const CategoryList = () => {
 
     const [searchType, setSearchType] = useRecoilState(categorySearchType)
     const [searchKeyWord, setSearchKeyWord] = useRecoilState(categorySearchKeyWord)
+    const [loading, setLoading] = useState<boolean>(false);
 
     const handlePageChange = (page:number) => {
         setPage(page);
@@ -77,15 +79,17 @@ const CategoryList = () => {
 
     useMemo(()=>{
         if(categoryListDataAtom?.state){
-            //loading
+            setLoading(true)
         }
         if(categoryListDataAtom?.state === 'hasValue' && categoryListDataAtom?.contents){
             setCategoryListData(categoryListDataAtom?.contents);
+            setLoading(false)
         }
     },[categoryListDataAtom])
 
     return(
         <>
+            {loading && <PopLoading/>}
             <section className="board-list-section">
                 <h4 className="sub-title">카테고리</h4>
                 <div className="board-util">

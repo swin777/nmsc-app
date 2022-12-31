@@ -7,6 +7,8 @@ import '../../../assets/resources/homepage/css/hightlight.css'
 import { History, TopicDetail } from "../../../models/topic";
 import { serverCall } from "../../../utils/apiCallUtil";
 import axios, { AxiosRequestConfig } from "axios";
+import Loading from "../../../components/Loading";
+import PopLoading from "../../../components/PopLoading";
 
 
 const enum TAB_MODE {FILE, HISTORY}
@@ -57,7 +59,7 @@ const HistoryContent = ({historyArr, categoryId, topicId, topicName}:HistoryProp
                 </div>
                 <div className="board-view-section">
                     <div className="board-header">
-                        <strong>ver.{history.version}</strong> 
+                        <strong>ver.{`${history.version} / ${history.userName}`}</strong> 
                         <div className="group">
                             <span className="date">{history.regDate}</span> 
                             <span className="save" title="저장하기" onClick={() => download(history)}>저장하기</span> 
@@ -82,10 +84,12 @@ const TopicIntro = () => {
     const [topicDetail, setTopicDetail] = useState<TopicDetail|null>(null)
     const [tabMode, setTabMode] = useState(TAB_MODE.FILE)
     const [fileStr, setFileStr] = useState('');
+    const [fileLoading, setFileLoading] = useState<boolean>(false);
+    const [detaiLoading, setDetailLoading] = useState<boolean>(false);
 
     useMemo(()=>{
         if(detailTopicAtom?.state){
-            //loading
+            setDetailLoading(true)
         }
         if(detailTopicAtom?.state === 'hasValue' && detailTopicAtom?.contents){
             if(detailTopicAtom?.contents && detailTopicAtom?.contents.history.length>0 ){
@@ -94,15 +98,18 @@ const TopicIntro = () => {
                 }
             }
             setTopicDetail(detailTopicAtom?.contents);
+            setDetailLoading(false)
         }
     },[detailTopicAtom])
 
     useMemo(()=>{
         if(readFileStr?.state){
-            //loading
+            setFileStr('')
+            setFileLoading(true)
         }
         if(readFileStr?.state === 'hasValue' && readFileStr?.contents){
             setFileStr(readFileStr?.contents);
+            setFileLoading(false)
         }
     },[readFileStr])
 
@@ -148,7 +155,10 @@ const TopicIntro = () => {
                             </div>
                         </div>
                     </div>
-                    {tabMode===TAB_MODE.FILE && <FileContent str={fileStr}/>}
+                    {detaiLoading && <PopLoading/>}
+                    {tabMode===TAB_MODE.FILE && 
+                        (!fileLoading ? <FileContent str={fileStr}/> : <Loading backgroundColor='#000'/>)
+                    }
                     {tabMode===TAB_MODE.HISTORY && <HistoryContent historyArr={topicDetail?.history} categoryId={category?.categoryId} topicId={topicDetail?.topic.topicId} topicName={topicDetail?.topic.title}/>}
                 </div>
             </section>

@@ -19,6 +19,8 @@ export class History{
     regDate!: string;
     comments!: string;
     files!: File[];
+    userId:string='';
+    userName:string='';
 }
 
 export class File{

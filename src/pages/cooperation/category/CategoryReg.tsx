@@ -13,6 +13,7 @@ const CategoryReg = () => {
     const [category, setCategory] = useState<Category>(new Category('dms02user01'));
 
     const reg = async() => {
+        if(!validate()){return}
         let res:any = await serverCall(`/homepage/html/base/collaboration/insertCategory.do`, 'POST', categorySendMake(category))
         if(res.data){
             alert('등록되었습니다.');
@@ -21,6 +22,19 @@ const CategoryReg = () => {
         }else{
             alert(res.error);
         }
+    }
+
+    const validate = ():boolean => {
+        let result = true
+        if(!category.title){
+            alert("제목을 입력하세요.")
+            return result = false;
+        }
+        if(!category.contents){
+            alert("내용을 입력하세요.")
+            return result = false;
+        }
+        return result;
     }
 
     return(
