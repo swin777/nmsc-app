@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from "react";
 import { useRecoilState, useRecoilValueLoadable, useSetRecoilState } from "recoil"
-import { categoryRefresh, listCategories, mode, MODE, selectCatory, topicRefresh, categorySearchKeyWord, categorySearchType, SEARCH_TYPE } from '../state'
+import { categoryRefresh, listCategories, mode, MODE, selectCatory, topicRefresh, categorySearchKeyWord, categorySearchType as categorySearchTypeAtom, SEARCH_TYPE } from '../state'
 import Pagination from "react-js-pagination";
 import { Category, CategoryListData } from "../../../models/category";
 import { serverCall } from "../../../utils/apiCallUtil";
@@ -58,9 +58,17 @@ const CategoryList = () => {
     const categoryListDataAtom = useRecoilValueLoadable<CategoryListData|null>(listCategories({page:page}))
     const [categoryListData, setCategoryListData] = useState<CategoryListData|null>(null)
 
-    const [searchType, setSearchType] = useRecoilState(categorySearchType)
-    const [searchKeyWord, setSearchKeyWord] = useRecoilState(categorySearchKeyWord)
+    const [categorySearchType, setCategorySearchType] = useRecoilState(categorySearchTypeAtom)
+    const setCategorySearchKeyWord = useSetRecoilState(categorySearchKeyWord)
+
+    const [searchType, setSearchType] = useState<string|null>('')
+    const [searchKeyWord, setSearchKeyWord] = useState<string|null>('')
+
     const [loading, setLoading] = useState<boolean>(false);
+
+    useEffect(() => {
+        setSearchType(categorySearchType)
+    },[])
 
     const handlePageChange = (page:number) => {
         setPage(page);
@@ -75,6 +83,11 @@ const CategoryList = () => {
         }else{
             alert(res.error);
         }
+    }
+
+    const search = () => {
+        setCategorySearchType(searchType)
+        setCategorySearchKeyWord(searchKeyWord)
     }
 
     useMemo(()=>{
@@ -94,9 +107,8 @@ const CategoryList = () => {
                 <h4 className="sub-title">카테고리</h4>
                 <div className="board-util">
                     <p className="all-tx">전체 {categoryListData?.total.toLocaleString()}건</p>
-                    <form name="searchForm" id="searchForm" method="post">
                     <input type="hidden" name="pageIndex" id="pageIndex" value="1"/>
-                    <div className="search-box" style={{borderRight:'solid #8d8d8d 1px'}}>
+                    <div className="search-box">
                         <div className="select-style" style={{backgroundColor:'#fff'}}>
                             <label htmlFor="searchType">{searchType}</label>
                             <select id="searchType" name="searchType" onChange={e=>setSearchType(e.target.value+'')} value={searchType+''}>
@@ -108,12 +120,9 @@ const CategoryList = () => {
                         </div>
                         <div className="search-text">
                             <input type="text" className="input" title="검색어 입력" id="searchWord" name="searchWord" onChange={(e)=>setSearchKeyWord(e.target.value)}/>
-                            {/* <button className="btn-search searchBtn">
-                                <span className="hide">검색</span>
-                            </button> */}
+                            <button className="btn-search searchBtn" onClick={search}></button>
                         </div>
                     </div>
-                    </form>
                 </div>
 
                 {/* <ul id="search-data" className="gallery-list collabo" style={{height:600, overflowY:'auto'}}> */}

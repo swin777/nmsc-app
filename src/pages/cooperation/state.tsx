@@ -85,7 +85,7 @@ export const listCategories = selectorFamily<CategoryListData|null, any>({
     get: (params:any) => async ({get}) => {
         get(categoryRefresh);
         try{
-            let param = categorySearchType ? `?${convertCode(SEARCH_TYPE, get(categorySearchType))}=${get(categorySearchKeyWord)}` : ''
+            let param = categorySearchType && categorySearchKeyWord ? `?${convertCode(SEARCH_TYPE, get(categorySearchType))}=${get(categorySearchKeyWord)}` : ''
             let res:any = await serverCall(`/homepage/html/base/collaboration/listCategories.do${param}`, 'GET', null)
             if(res.data && res.data.data){
                 let data = res.data

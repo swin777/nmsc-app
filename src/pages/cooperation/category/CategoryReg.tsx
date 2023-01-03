@@ -16,8 +16,8 @@ const CategoryReg = () => {
         if(!validate()){return}
         let res:any = await serverCall(`/homepage/html/base/collaboration/insertCategory.do`, 'POST', categorySendMake(category))
         if(res.data){
-            alert('등록되었습니다.');
             setCategoryRefresh(new Date().getTime())
+            alert('등록되었습니다.');
             setMode(MODE.CATEGORY_LIST);
         }else{
             alert(res.error);

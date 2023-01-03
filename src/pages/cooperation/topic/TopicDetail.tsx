@@ -50,7 +50,6 @@ const HistoryContent = ({historyArr, categoryId, topicId, topicName}:HistoryProp
     }
 
     return(
-        // <div className="history_wrap" style={{height:480, overflowY:'auto'}}>
         <div className="history_wrap">
             {historyArr && historyArr.map((history)=>
             <div className="history_box">
@@ -107,9 +106,11 @@ const TopicIntro = () => {
             setFileStr('')
             setFileLoading(true)
         }
-        if(readFileStr?.state === 'hasValue' && readFileStr?.contents){
-            setFileStr(readFileStr?.contents);
+        if(readFileStr?.state === 'hasValue'){
             setFileLoading(false)
+            if(readFileStr?.contents){
+                setFileStr(readFileStr?.contents);
+            }
         }
     },[readFileStr])
 

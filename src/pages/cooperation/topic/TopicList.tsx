@@ -3,7 +3,7 @@ import { useRecoilState, useRecoilValue, useRecoilValueLoadable, useSetRecoilSta
 import PopLoading from "../../../components/PopLoading";
 import { Topic, TopicListData } from "../../../models/topic";
 import { serverCall } from "../../../utils/apiCallUtil";
-import { listTopics, MODE, mode, SEARCH_TYPE, selectCatory, selectTopic, topicDetailRefresh, topicRefresh, topicSearchKeyWord, topicSearchType } from "../state";
+import { listTopics, MODE, mode, SEARCH_TYPE, selectCatory, selectTopic, topicDetailRefresh, topicRefresh, topicSearchKeyWord, topicSearchType as topicSearchTypeAtom } from "../state";
 
 type TopicProps = {
     topic: Topic|null,
@@ -66,9 +66,17 @@ const TopicList = () => {
     const setSelectTopic = useSetRecoilState(selectTopic) 
     const setTopicRefresh = useSetRecoilState(topicRefresh);
 
-    const [searchType, setSearchType] = useRecoilState(topicSearchType)
-    const [searchKeyWord, setSearchKeyWord] = useRecoilState(topicSearchKeyWord)
+    const [topicSearchType, setTopicSearchType] = useRecoilState(topicSearchTypeAtom)
+    const setTopicSearchKeyWord = useSetRecoilState(topicSearchKeyWord)
+
+    const [searchType, setSearchType] = useState<string|null>('')
+    const [searchKeyWord, setSearchKeyWord] = useState<string|null>('')
+
     const [loading, setLoading] = useState<boolean>(false);
+
+    useEffect(() => {
+        setSearchType(topicSearchType)
+    },[])
 
     const goTopicReg = () => {
         setSelectTopic(null)
@@ -83,6 +91,11 @@ const TopicList = () => {
         }else{
             alert(res.error);
         }
+    }
+
+    const search = () => {
+        setTopicSearchType(searchType)
+        setTopicSearchKeyWord(searchKeyWord)
     }
 
     useMemo(()=>{
@@ -105,9 +118,8 @@ const TopicList = () => {
                 </div>
                 <div className="board-util mb-20">
                     <p className="all-tx">전체 {topicListData?.count}건</p>
-                    <form name="searchForm" id="searchForm" method="post">
                     <input type="hidden" name="pageIndex" id="pageIndex" value="1"/>
-                    <div className="search-box" style={{borderRight:'solid #8d8d8d 1px'}}>
+                    <div className="search-box">
                         <div className="select-style" style={{backgroundColor:'#fff'}}>
                             <label htmlFor="searchType">{searchType}</label>
                             <select id="searchType" name="searchType" onChange={e=>setSearchType(e.target.value+'')} value={searchType+''}>
@@ -119,10 +131,9 @@ const TopicList = () => {
                         </div>
                         <div className="search-text">
                             <input type="text" className="input" title="검색어 입력" id="searchWord" name="searchWord" onChange={(e)=>setSearchKeyWord(e.target.value)}/>
-                            {/* <button className="btn-search searchBtn"><span className="hide">검색</span></button> */}
+                            <button className="btn-search searchBtn" onClick={search}></button>
                         </div>
                     </div>
-                    </form>
                 </div>
                 {/* <div style={{height:700, overflowY:'auto'}}> */}
                 <div>

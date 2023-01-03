@@ -135,8 +135,8 @@ const TopicReg = () => {
             formData.append('categoryId', uploadTopic.categoryId+"");
             let res:any = await serverCall(`/homepage/html/base/collaboration/insertTopic.do`, 'POST', formData) 
             if(res.data){
-                alert('등록되었습니다.');
                 setTopicRefresh(new Date().getTime())
+                alert('등록되었습니다.');
                 setMode(MODE.TOPIC_LIST)
             }else{
                 alert(res.error);
