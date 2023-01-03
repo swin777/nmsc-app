@@ -96,7 +96,7 @@ const CategoryList = () => {
                     <p className="all-tx">전체 {categoryListData?.total.toLocaleString()}건</p>
                     <form name="searchForm" id="searchForm" method="post">
                     <input type="hidden" name="pageIndex" id="pageIndex" value="1"/>
-                    <div className="search-box">
+                    <div className="search-box" style={{borderRight:'solid #8d8d8d 1px'}}>
                         <div className="select-style" style={{backgroundColor:'#fff'}}>
                             <label htmlFor="searchType">{searchType}</label>
                             <select id="searchType" name="searchType" onChange={e=>setSearchType(e.target.value+'')} value={searchType+''}>
