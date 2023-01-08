@@ -1,5 +1,5 @@
 import { AgGridReact } from "ag-grid-react";
-import { useState, useRef, useCallback, useEffect, ChangeEvent, useMemo } from "react";
+import { useState, useRef, useCallback, useEffect, ChangeEvent } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { leftJoinKey as leftJoinKeyAtom, rightJoinKey as rightJoinKeyAtom, keySettingPopYn, 
         leftGridData as leftGridDataAtom, rightGridData as rightGridDataAtom, 
@@ -11,8 +11,10 @@ import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-mod
 import { csvToJSON, exportCSVFile } from "../../utils/utils";
 import KeySettingPop from "./KeySettingPop";
 import { _join_, _leftJoin_ } from "../../utils/linqUtil";
+import { CellValueChangedEvent, FilterChangedEvent } from "ag-grid-community/dist/lib/events";
 import LinqWorker  from "../../utils/linqWorker?worker";
 import { Bar } from "react-chartjs-2";
+import { faker } from "@faker-js/faker";
 import {CategoryScale} from 'chart.js'; 
 import autocolors from 'chartjs-plugin-autocolors';
 import Chart from 'chart.js/auto';
@@ -39,9 +41,10 @@ const ResultChart = () => {
     const [yAxis, setYAxis] = useState<string>('')
     const [dataSet, setDataSet] = useState<string>('')
     const [chartData, setChartData] = useState(null)
+
     const options = { responsive: true, plugins: {legend: {position: 'top' as const}, title: {display: false,text: joinGridData?.rowData?.length+''}, autocolors}};
 
-    const chrartDraw = () => {
+    useEffect(()=>{
         if(joinGridData &&xAxis!=='' && yAxis!=='' && dataSet!==''){
             const labelUnique = new Set(joinGridData.rowData.map((e:any)=>e[xAxis]));
             let labels = [...labelUnique];
@@ -65,7 +68,7 @@ const ResultChart = () => {
             }
             setChartData(data);
         }
-    }
+    },[joinGridData, xAxis, yAxis, dataSet])
 
     return (
         <div>
@@ -73,7 +76,7 @@ const ResultChart = () => {
                 <div style={{display:'flex', flexFlow:'column wrap', alignItems:'center'}}>
                     <h6>X축</h6>
                     <div className="select-style" style={{backgroundColor:'#fff'}}>
-                        <label htmlFor="searchType">{xAxis===''?'선택':xAxis}</label>
+                        <label htmlFor="searchType">{xAxis}</label>
                         <select id="xAxis" onChange={e=>setXAxis(e.target.value)} value={xAxis}>
                             <option value={''}></option>
                             {joinGridData?.columnDefs.map((column:any) =>
@@ -85,7 +88,7 @@ const ResultChart = () => {
                 <div style={{display:'flex', flexFlow:'column wrap', alignItems:'center'}}>
                     <h6>데이터셋</h6>
                     <div className="select-style" style={{backgroundColor:'#fff'}}>
-                        <label htmlFor="searchType">{dataSet===''?'선택':dataSet}</label>
+                        <label htmlFor="searchType">{dataSet}</label>
                         <select id="xAxis" onChange={e=>setDataSet(e.target.value)} value={dataSet}>
                             <option value={''}></option>
                             {joinGridData?.columnDefs.map((column:any) =>
@@ -97,7 +100,7 @@ const ResultChart = () => {
                 <div style={{display:'flex', flexFlow:'column wrap', alignItems:'center'}}>
                     <h6>Y축</h6>
                     <div className="select-style" style={{backgroundColor:'#fff'}}>
-                        <label htmlFor="searchType">{yAxis===''?'선택':yAxis}</label>
+                        <label htmlFor="searchType">{yAxis}</label>
                         <select id="xAxis" onChange={e=>setYAxis(e.target.value)} value={yAxis}>
                             <option value={''}></option>
                             {joinGridData?.columnDefs.map((column:any) =>
@@ -106,13 +109,9 @@ const ResultChart = () => {
                         </select>
                     </div>
                 </div>
-                <div style={{display:'flex', flexFlow:'column wrap', alignItems:'center'}}>
-                    <div style={{height:42}}></div>
-                    <button className="btn btn-primary" onClick={chrartDraw}>확인</button>&nbsp;
-                </div>
             </div>
             {(xAxis!=='' && yAxis!=='' && dataSet!=='' && chartData) ?
-                <Bar options={options} data={chartData}/>
+                <Bar options={options} data={chartData} />
               : <div className="chart_area"/>
             }
         </div>
@@ -149,7 +148,7 @@ const SelectCSVGrid = ({input, gridData, setGridData, setOperationTool}:SelectSC
         setLeftJoinKey('');
         setRightJoinKey('');
         setJoinGridData(null)
-        setGridData({columnDefs:convert.columnDefs, rowData:convert.rowData});
+        setGridData({columnDefs:convert.columnDefs, rowData:convert.rowData, editData:null});
         if(gridApi.current){
             gridApi.current.setRowData(JSON.parse(JSON.stringify(convert.rowData)))
         }
@@ -208,11 +207,11 @@ const SelectCSVGrid = ({input, gridData, setGridData, setOperationTool}:SelectSC
         }
     }, [input]);
 
-    useEffect(()=> {
-        if(setOperationTool){
-            setOperationTool({add:addRow, remove:removeRow, filterClear:filterClear, gridApi:gridApi.current});
-        }
-    },[gridData])
+    // useEffect(()=> {
+    //     if(setOperationTool){
+    //         setOperationTool({add:addRow, remove:removeRow, filterClear:filterClear});
+    //     }
+    // },[gridData])
 
     const addRow = () => {
         const filterObj = gridApi.current.getFilterModel()
@@ -220,16 +219,28 @@ const SelectCSVGrid = ({input, gridData, setGridData, setOperationTool}:SelectSC
         let newRow:any = {}
         gridData.columnDefs.forEach((e:any) => newRow[e.field]='')
         newRow = {...newRow, ...filterRow};
-        setGridData({...gridData, rowData:JSON.parse(JSON.stringify([...gridData.rowData, newRow]))})
-        gridApi.current.setRowData([...gridData.rowData, newRow])
-        gridApi.current.ensureIndexVisible(gridData.rowData.length-1, 'middle');
+        if(gridData.editData){
+            //setGridData({...gridData, rowData:[...gridData.rowData, newRow], editData:[...gridData.editData, newRow]})
+            gridApi.current.setRowData(JSON.parse(JSON.stringify([...gridData.editData, newRow])))
+            gridApi.current.ensureIndexVisible(gridData.editData.length-1, 'middle');
+        }else{
+            setGridData({...gridData, rowData:JSON.parse(JSON.stringify([...gridData.rowData, newRow]))})
+            gridApi.current.setRowData([...gridData.rowData, newRow])
+            gridApi.current.ensureIndexVisible(gridData.rowData.length-1, 'middle');
+        }
     }
 
     const removeRow = () => {
         let idx = gridApi.current.getSelectedNodes()[0].rowIndex;
-        let remainData = [...(gridData.rowData.slice(0, idx)), ...(gridData.rowData.slice(idx+1, gridData.rowData.length))]
-        setGridData({...gridData, rowData:JSON.parse(JSON.stringify(remainData))})
-        gridApi.current.setRowData([...gridData.rowData])
+        if(gridData.editData){
+            let remainData = [...(gridData.editData.slice(0, idx)), ...(gridData.editData.slice(idx+1, gridData.editData.length))]
+            //setGridData({...gridData, rowData:[...gridData.rowData], editData:remainData})
+            gridApi.current.setRowData(JSON.parse(JSON.stringify(remainData)))
+        }else{
+            let remainData = [...(gridData.rowData.slice(0, idx)), ...(gridData.rowData.slice(idx+1, gridData.rowData.length))]
+            setGridData({...gridData, rowData:JSON.parse(JSON.stringify(remainData))})
+            gridApi.current.setRowData([...gridData.rowData])
+        }
     }
 
     const filterClear = () => {
@@ -241,6 +252,7 @@ const SelectCSVGrid = ({input, gridData, setGridData, setOperationTool}:SelectSC
             {!gridData && <p>파일을 드래그 & 드롭하여 업로드</p>}
             {gridData &&
             <div style={{height: '100%',width: '100%',}}className="ag-theme-alpine">
+                {/* <button onClick={addRow}>add</button> */}
                 <AgGridReact
                     columnDefs={gridData.columnDefs}
                     onGridReady = {(params:any) => {
@@ -252,9 +264,22 @@ const SelectCSVGrid = ({input, gridData, setGridData, setOperationTool}:SelectSC
                     animateRows={true}
                     defaultColDef={{resizable:true, sortable:true, editable:true}}
                     onCellValueChanged={(event:any)=>{
-                        let chageData = [...(gridData.rowData.slice(0, event.rowIndex)), JSON.parse(JSON.stringify(event.data)), ...(gridData.rowData.slice(event.rowIndex+1, gridData.rowData.length))]
-                        setGridData({...gridData, rowData:chageData})
+                        let chageData;
+                        if(!gridData.editData){
+                            let cloneData = JSON.parse(JSON.stringify(gridData.rowData))
+                            chageData = [...(cloneData.slice(0, event.rowIndex)), JSON.parse(JSON.stringify(event.data)), ...(cloneData.slice(event.rowIndex+1, cloneData.length))]
+                        }else{
+                            chageData = [...(gridData.editData.slice(0, event.rowIndex)), JSON.parse(JSON.stringify(event.data)), ...(gridData.editData.slice(event.rowIndex+1, gridData.editData.length))]
+                        }
+                        setGridData({...gridData, editData:chageData})
                     }}
+                    // onFilterChanged = {(event:FilterChangedEvent)=>{
+                    //     const allRowData:any = [];
+                    //     //event.api.forEachNode((node:any) => allRowData.push(node.data));
+                    //     event.api.forEachNodeAfterFilter((node:any) => allRowData.push(node.data));
+                    //     event
+                    //     setGridData({...gridData, editData:JSON.parse(JSON.stringify(allRowData))})
+                    // }}
                 />
             </div>
             }
@@ -272,15 +297,11 @@ const GeneralUser = () => {
     const [joinGridData, setJoinGridData] = useRecoilState<GridData|null>(joinGridDataAtom);
     const leftJoinKey = useRecoilValue(leftJoinKeyAtom);
     const rightJoinKey = useRecoilValue(rightJoinKeyAtom);
-    const [ worker, setWorker ] = useState<Worker>();
+    const [ worker ] = useState<Worker>(new LinqWorker());
     const [leftOperationTool, setLeftOperationTool] = useState<any>({});
     const [rightOperationTool, setrightOperationTool] = useState<any>({});
     const [loading, setLoading] = useState<boolean>(false);
     const [chartYN, setChartYN] = useState<boolean>(false);
-
-    useMemo(()=>{
-        setWorker(new LinqWorker())
-    },[])
 
     const join = async(type:string) => {
         if(!leftGridData){
@@ -302,21 +323,13 @@ const GeneralUser = () => {
             ) //오른쪽 그리드 컬럼중 왼쪽 겹치는것을 뺀다.
             let colDef = [...leftGridData.columnDefs, ...rightFilterCol];
 
+            //let leftTarget = leftGridData.editData ? leftGridData.editData : leftGridData.rowData;
             let leftTarget:any = [];
             leftOperationTool.gridApi.forEachNodeAfterFilter((node:any) => leftTarget.push(node.data))
-            let rightTarget:any = [];
-            rightOperationTool.gridApi.forEachNodeAfterFilter((node:any) => rightTarget.push(node.data))
+            let rightTarget = rightGridData.editData ? rightGridData.editData : rightGridData.rowData
 
-            worker!.onmessage = e => {
-                try{
-                    setJoinGridData({columnDefs:colDef, rowData:e.data}); 
-                    setLoading(false);
-                }catch(e:any){
-                    setLoading(false);
-                }
-            }
-            worker!.onerror = e => alert('융합작업이 실패하였습니다.');
-            worker!.postMessage({type:type, leftData:leftTarget, rightData:rightTarget, leftKey:leftJoinKey, rightKey:rightJoinKey})
+            worker.onmessage = e => {setJoinGridData({columnDefs:colDef, rowData:e.data, editData:null}); setLoading(false);}
+            worker.postMessage({type:type, leftData:leftTarget, rightData:rightTarget, leftKey:leftJoinKey, rightKey:rightJoinKey})
         }
     }
 

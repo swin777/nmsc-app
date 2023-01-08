@@ -30,8 +30,8 @@ const KeySettingPop = () => {
                                 <th>융합데이터 자료1</th>
                                 <td className="border_right">
                                     <div className="select-style" style={{width:'100%', backgroundColor:'#fff'}}>
-                                        <label >{leftJoinKey ? leftJoinKey : ''}</label>
-                                        <select id="leftKey"  onChange={(e)=>setLeftJoinKey(e.target.value)} value={leftJoinKey}>
+                                        <label >{leftJoinKey ? leftJoinKey : '선택'}</label>
+                                        <select id="leftKey"  onChange={(e)=>setLeftJoinKey(e.target.value)} value={leftJoinKey?leftJoinKey:''}>
                                             <option value={''}></option>
                                             {leftGridData && leftGridData.columnDefs && leftGridData.columnDefs.map((col:any) =>
                                             <option value={col.field}>{col.field}</option>
@@ -47,8 +47,8 @@ const KeySettingPop = () => {
                                 <th>융합데이터 자료2</th>
                                 <td className="border_right">
                                     <div className="select-style" style={{width:'100%', backgroundColor:'#fff'}}>
-                                        <label >{rightJoinKey ? rightJoinKey : ''}</label>
-                                        <select id="rightKey" onChange={(e)=>setRightJoinKey(e.target.value)} value={rightJoinKey}>
+                                        <label >{rightJoinKey ? rightJoinKey : '선택'}</label>
+                                        <select id="rightKey" onChange={(e)=>setRightJoinKey(e.target.value)} value={rightJoinKey?rightJoinKey:''}>
                                             <option value={''}></option>
                                             {rightGridData && rightGridData.columnDefs && rightGridData.columnDefs.map((col:any) =>
                                             <option value={col.field}>{col.field}</option>

@@ -59,18 +59,13 @@ export const exportCSVFile = (headers:any, items:any, fileTitle:string) => {
   if (headers) {
       items = [headers, ...items];
   }
-
   // Convert Object to JSON
   var jsonObject = JSON.stringify(items);
-
   var csv = convertToCSV(jsonObject);
-
   var exportedFilenmae = fileTitle + '.csv' || 'export.csv';
-
-  var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  var blob = new Blob(["\ufeff"+csv], { type: 'text/csv;charset=utf-8;' });
   var link = document.createElement("a");
   if (link.download !== undefined) { // feature detection
-      // Browsers that support HTML5 download attribute
       var url = URL.createObjectURL(blob);
       link.setAttribute("href", url);
       link.setAttribute("download", exportedFilenmae);
